@@ -1,9 +1,11 @@
 #pragma once
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QGraphicsItem>
+#include <QtWidgets/QGraphicsScene>
+#include <QtGui>
 #include "ui_StoreDashAdmin.h"
 #include "DrawingArea.h"
-#include "OrganizationEditor.h"
 
 class StoreDashAdmin : public QWidget
 {
@@ -14,10 +16,11 @@ public:
 
 private slots:
 	void shelfButtonPressed();
-	void organizationButtonPressed();
+	void nodeButtonPressed();
+	void connectionButtonPressed();
+	void saveButtonPressed();
+	void loadButtonPressed();
 
 private:
 	Ui::StoreDashAdminClass ui;
-	OrganizationEditor organizationEditorWindow; //keeps the thing persistant
-	std::unique_ptr<DrawingArea> m_drawingArea;
 };

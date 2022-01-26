@@ -43,6 +43,9 @@
       <property name="bottomMargin">
        <number>20</number>
       </property>
+      <item>
+       <widget class="DrawingArea" name="graphicsView"/>
+      </item>
      </layout>
     </item>
    </layout>
@@ -60,22 +63,22 @@
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QPushButton" name="organizationButton">
+       <widget class="QPushButton" name="nodeButton">
         <property name="toolTip">
          <string>Edit organization</string>
         </property>
         <property name="text">
-         <string>Organization</string>
+         <string>Node</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="unitsButton">
+       <widget class="QPushButton" name="connectionButton">
         <property name="toolTip">
          <string>Set measurement units</string>
         </property>
         <property name="text">
-         <string>Units</string>
+         <string>Connection</string>
         </property>
        </widget>
       </item>
@@ -110,6 +113,20 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="saveButton">
+        <property name="text">
+         <string>Save</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="loadButton">
+        <property name="text">
+         <string>Load</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -128,6 +145,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>DrawingArea</class>
+   <extends>QGraphicsView</extends>
+   <header>drawingarea.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="StoreDashAdmin.qrc"/>
  </resources>

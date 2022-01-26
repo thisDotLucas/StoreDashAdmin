@@ -24,8 +24,17 @@
     <Filter Include="Source Files\Drawing">
       <UniqueIdentifier>{8978e69b-b216-49a9-99a5-9d37789c2cc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawing\Pens">
+      <UniqueIdentifier>{cd0faf26-22de-4f4e-ad46-c4dbfbefb8e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawing\Pickers">
+      <UniqueIdentifier>{716f594c-e193-4f69-9420-57fe93282056}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Source Files\Drawing\Entities">
       <UniqueIdentifier>{2a005276-773a-48a5-9bf6-afef951a47e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serializing">
+      <UniqueIdentifier>{80f18e7d-d6e0-4cf5-9f02-6901a45325bd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,8 +67,35 @@
     <ClCompile Include="Shelf.cpp">
       <Filter>Source Files\Drawing\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="OrganizationEditor.cpp">
+    <ClCompile Include="Pen.cpp">
+      <Filter>Source Files\Drawing\Pens</Filter>
+    </ClCompile>
+    <ClCompile Include="ShelfPen.cpp">
+      <Filter>Source Files\Drawing\Pens</Filter>
+    </ClCompile>
+    <ClCompile Include="NodePen.cpp">
+      <Filter>Source Files\Drawing\Pens</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\Drawing\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Connection.cpp">
+      <Filter>Source Files\Drawing\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionPen.cpp">
+      <Filter>Source Files\Drawing\Pens</Filter>
+    </ClCompile>
+    <ClCompile Include="Picker.cpp">
+      <Filter>Source Files\Drawing\Pickers</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectionPicker.cpp">
+      <Filter>Source Files\Drawing\Pickers</Filter>
+    </ClCompile>
+    <ClCompile Include="ShelfMapper.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Serializable.cpp">
+      <Filter>Source Files\Serializing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,14 +111,41 @@
     <ClInclude Include="Shelf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Pen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShelfPen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NodePen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Connection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionPen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Picker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnectionPicker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Serializable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="OrganizationEditor.ui">
+    <QtUic Include="MapShelf.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="OrganizationEditor.h">
+    <QtMoc Include="ShelfMapper.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
