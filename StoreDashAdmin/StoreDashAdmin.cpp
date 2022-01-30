@@ -11,6 +11,10 @@ StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 	ui.graphicsView->setScene(new QGraphicsScene(this));
+	ui.graphicsView->scene()->setSceneRect(QRect{ 0, 0, ui.graphicsView->width(), ui.graphicsView->height() });
+
+	ui.graphicsView->centerOn(0, 0);
+
 	connect(ui.shelfButton, &QPushButton::pressed, this, &StoreDashAdmin::shelfButtonPressed);
 	connect(ui.nodeButton, &QPushButton::pressed, this, &StoreDashAdmin::nodeButtonPressed);
 	connect(ui.connectionButton, &QPushButton::pressed, this, &StoreDashAdmin::connectionButtonPressed);
@@ -21,6 +25,14 @@ StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 void StoreDashAdmin::shelfButtonPressed()
 {
 	ui.graphicsView->setPen(std::make_shared<ShelfPen>());
+}
+
+void StoreDashAdmin::setCursorLabel(const QPointF& point)
+{
+	std::stringstream stream;
+	stream << std::to_string(int(point.x())) << ", " << std::to_string(int(point.y()));
+
+	ui.posLabel->setText(QString::fromStdString(stream.str()));
 }
 
 void StoreDashAdmin::nodeButtonPressed()

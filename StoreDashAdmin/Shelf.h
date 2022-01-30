@@ -24,11 +24,6 @@ protected:
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 
 private:
-	int m_x;
-	int m_y;
-	double m_w;
-	double m_h;
-	bool m_pressed;
 	std::optional<std::string> m_moduleId;
 	std::optional<std::string> m_shelfId;
 };

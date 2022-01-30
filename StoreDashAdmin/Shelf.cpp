@@ -6,21 +6,19 @@
 
 Shelf::Shelf(QJsonObject object)
 {
-	m_pressed = false;
-	m_x = object.value("X").toInt();
-	m_y = object.value("Y").toInt();
-	m_w = object.value("Width").toInt();
-	m_h = object.value("Height").toInt();
+	const double x = object.value("X").toDouble();
+	const double y = object.value("Y").toDouble() * -1;
+	const int w = object.value("Width").toInt();
+	const int h = object.value("Height").toInt();
 
-	setRect(QRectF(m_x, m_y, m_w, m_h));
+	setRect(QRectF(x, y, w, h));
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
 }
 
-Shelf::Shelf(const int x, const int y) : m_x(x), m_y(y), m_w(10), m_h(10)
+Shelf::Shelf(const int x, const int y)
 {
 	setRect(QRectF(x, y, 0, 0));
-	m_pressed = false;
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
 }
@@ -36,10 +34,10 @@ std::optional<QJsonObject> Shelf::serialize(QJsonObject& root)
 	QJsonObject jsonShelf;
 	jsonShelf.insert("ModuleID", getModuleId().value_or("NULL").c_str());
 	jsonShelf.insert("ShelfID", getShelfId().value_or("NULL").c_str());
-	jsonShelf.insert("X", rect().x());
-	jsonShelf.insert("Y", rect().y());
-	jsonShelf.insert("Width", rect().width());
-	jsonShelf.insert("Height", rect().height());
+	jsonShelf.insert("X", sceneBoundingRect().x());
+	jsonShelf.insert("Y", sceneBoundingRect().y() * -1);
+	jsonShelf.insert("Width", sceneBoundingRect().width());
+	jsonShelf.insert("Height", sceneBoundingRect().height());
 
 	auto shelfJsonArray = root.value("Shelves").toArray();
 	shelfJsonArray << jsonShelf;
@@ -50,14 +48,12 @@ std::optional<QJsonObject> Shelf::serialize(QJsonObject& root)
 
 void Shelf::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-	m_pressed = true;
 	update();
 	QGraphicsItem::mousePressEvent(event);
 }
 
 void Shelf::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-	m_pressed = false;
 	update();
 	QGraphicsItem::mouseReleaseEvent(event);
 }

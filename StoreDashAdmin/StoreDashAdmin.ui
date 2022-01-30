@@ -127,6 +127,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QLabel" name="posLabel">
+        <property name="text">
+         <string>00 , 00</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>

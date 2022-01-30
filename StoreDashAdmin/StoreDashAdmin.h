@@ -13,6 +13,7 @@ class StoreDashAdmin : public QWidget
 
 public:
 	StoreDashAdmin(QWidget* parent = Q_NULLPTR);
+	void setCursorLabel(const QPointF& point);
 
 private slots:
 	void shelfButtonPressed();

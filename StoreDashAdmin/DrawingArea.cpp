@@ -1,12 +1,14 @@
 #include "DrawingArea.h"
 #include "Shelf.h"
 #include "ShelfPen.h"
+#include "StoreDashAdmin.h"
 #include <iostream>
 
 DrawingArea::DrawingArea(QWidget* parent) : QGraphicsView(parent)
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setMouseTracking(true);
 }
 
 void DrawingArea::setPen(std::shared_ptr<Pen> pen)
@@ -30,7 +32,6 @@ void DrawingArea::mousePressEvent(QMouseEvent* e)
 		auto item = m_picker.value()->pick(this, mapToScene(e->pos()));
 		if (item.has_value())
 		{
-			//m_items.insert(item.value());
 			scene()->addItem(item.value());
 			item.value()->update();
 			m_picker = std::nullopt;
@@ -57,11 +58,14 @@ void DrawingArea::mouseReleaseEvent(QMouseEvent* e)
 
 void DrawingArea::mouseMoveEvent(QMouseEvent* e)
 {
+	QPointF point = mapToScene(e->pos());
+
 	if (m_pen.has_value())
 	{
-		QPointF point = mapToScene(e->pos());
 		m_pen.value()->move(point);
 	}
+
+	((StoreDashAdmin*)this->window())->setCursorLabel(point);
 
 	QGraphicsView::mouseMoveEvent(e);
 }
