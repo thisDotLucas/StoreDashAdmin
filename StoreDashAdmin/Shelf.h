@@ -22,6 +22,7 @@ protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event);
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
+	QVariant itemChange(GraphicsItemChange change, const QVariant& value);
 
 private:
 	std::optional<std::string> m_moduleId;

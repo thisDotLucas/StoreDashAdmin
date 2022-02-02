@@ -4,16 +4,18 @@
 #include "NodePen.h"
 #include "ConnectionPen.h"
 #include "ConnectionPicker.h"
+#include "GridScene.h"
 #include <QFileDialog>
 #include <iostream>
 
 StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 {
 	ui.setupUi(this);
-	ui.graphicsView->setScene(new QGraphicsScene(this));
-	ui.graphicsView->scene()->setSceneRect(QRect{ 0, 0, ui.graphicsView->width(), ui.graphicsView->height() });
+	ui.graphicsView->setScene(new GridScene(this));
+	//ui.graphicsView->scene()->setSceneRect(QRect{ 0, 0, ui.graphicsView->width(), ui.graphicsView->height() });
+	//ui.graphicsView->setSceneRect(QRect{ -1 * ui.graphicsView->width(), ui.graphicsView->height(), ui.graphicsView->width(), ui.graphicsView->height() });
 
-	ui.graphicsView->centerOn(0, 0);
+	//ui.graphicsView->centerOn(0, 0);
 
 	connect(ui.shelfButton, &QPushButton::pressed, this, &StoreDashAdmin::shelfButtonPressed);
 	connect(ui.nodeButton, &QPushButton::pressed, this, &StoreDashAdmin::nodeButtonPressed);

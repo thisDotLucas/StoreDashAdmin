@@ -1,20 +1,55 @@
 #include "Node.h"
 #include "DrawingArea.h"
 #include "Connection.h"
+#include "NodeTypeSelectTool.h"
 #include <QtWidgets/QMenu>
 #include "qjsonarray.h"
+#include "GridScene.h"
 #include <QtWidgets/QGraphicsScene>
+
+#define RGB_BASIC 105, 153, 93
+#define RGB_START 173, 216, 230
+#define RGB_END 48, 25, 52
+#define RGB_PICKED 244, 176, 123
+
+namespace {
+
+	const char* nodeTypeToString(const NodeType type)
+	{
+		switch (type)
+		{
+		case NodeType::Start:
+			return "Start";
+		case NodeType::End:
+			return "End";
+		default:
+			return "Basic";
+		}
+	}
+
+	NodeType stringToNodeType(const std::string& typeName)
+	{
+		if (typeName == "Basic")
+			return NodeType::Basic;
+		else if (typeName == "Start")
+			return NodeType::Start;
+		else
+			return NodeType::End;
+	}
+
+}
 
 Node::Node(QJsonObject object)
 {
 	m_id = object.value("ID").toInt();
+	m_type = stringToNodeType(object.value("Type").toString().toStdString());
 
 	const double x = object.value("X").toInt();
-	const double y = object.value("Y").toInt() * -1;
+	const double y = object.value("Y").toInt() * -1.0;
 	constexpr double radius = 20.0;
 
 	QBrush brush;
-	brush.setColor(QColor(105, 153, 93));
+	brush.setColor(QColor(RGB_BASIC));
 	brush.setStyle(Qt::SolidPattern);
 	setBrush(brush);
 	setRect(QRectF(x - (radius / 2), y - (radius / 2), radius, radius));
@@ -26,7 +61,7 @@ Node::Node(QJsonObject object)
 Node::Node(const int x, const int y, const double radius) : m_id(runningNumber++)
 {
 	QBrush brush;
-	brush.setColor(QColor(105, 153, 93));
+	brush.setColor(QColor(RGB_BASIC));
 	brush.setStyle(Qt::SolidPattern);
 	setBrush(brush);
 	setRect(QRectF(x - (radius / 2), y - (radius / 2), radius, radius));
@@ -38,7 +73,7 @@ Node::Node(const int x, const int y, const double radius) : m_id(runningNumber++
 void Node::setPickedColor()
 {
 	QBrush brush;
-	brush.setColor(QColor(244, 176, 123));
+	brush.setColor(QColor(RGB_PICKED));
 	brush.setStyle(Qt::SolidPattern);
 	setBrush(brush);
 	update();
@@ -47,7 +82,20 @@ void Node::setPickedColor()
 void Node::resetColor()
 {
 	QBrush brush;
-	brush.setColor(QColor(105, 153, 93));
+
+	switch (m_type)
+	{
+	case NodeType::Basic:
+		brush.setColor(QColor(RGB_BASIC));
+		break;
+	case NodeType::Start:
+		brush.setColor(QColor(RGB_START));
+		break;
+	default:
+		brush.setColor(QColor(RGB_END));
+		break;
+	}
+
 	brush.setStyle(Qt::SolidPattern);
 	setBrush(brush);
 	update();
@@ -57,6 +105,7 @@ std::optional<QJsonObject> Node::serialize(QJsonObject& root)
 {
 	QJsonObject jsonNode;
 	jsonNode.insert("ID", m_id);
+	jsonNode.insert("Type", nodeTypeToString(m_type));
 
 	QRectF boundingRect = this->sceneBoundingRect();
 	QPointF rectMidPoint{ boundingRect.x() + boundingRect.width() / 2 , boundingRect.y() + boundingRect.height() / 2 };
@@ -94,6 +143,30 @@ void Node::removeConnection(Connection* connection)
 		m_endFor.erase(connection);
 }
 
+void Node::setNodeType(const NodeType type)
+{
+	m_type = type;
+	QBrush brush;
+
+	switch (m_type)
+	{
+	case NodeType::Basic:
+		brush.setColor(QColor(RGB_BASIC));
+		break;
+	case NodeType::Start:
+		brush.setColor(QColor(RGB_START));
+		break;
+	default:
+		brush.setColor(QColor(RGB_END));
+		break;
+	}
+
+	brush.setStyle(Qt::SolidPattern);
+	setBrush(brush);
+	update();
+
+}
+
 void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	update();
@@ -110,12 +183,19 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 {
 	QMenu menu;
 	menu.addAction("Delete");
+	menu.addAction("Type");
 
 	QAction* a = menu.exec(event->screenPos());
 
 	if (a && a->text() == "Delete")
 	{
 		remove();
+	}
+	else if (a && a->text() == "Type")
+	{
+		NodeTypeSelectTool* w = new NodeTypeSelectTool(this, (QWidget*)this->scene()->parent()->parent());
+		w->setWindowModality(Qt::WindowModality::ApplicationModal);
+		w->show();
 	}
 }
 
@@ -125,6 +205,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant& value)
 
 	if (change == ItemPositionChange && scene())
 	{
+		// Updates possible connections
 		QRectF boundingRect = sceneBoundingRect();
 		QPointF newMidPoint{ boundingRect.x() + boundingRect.width() / 2 , boundingRect.y() + boundingRect.height() / 2 };
 
@@ -132,6 +213,6 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant& value)
 		std::ranges::for_each(m_endFor, [&](Connection* c) { c->moveEnd(newMidPoint); });
 	}
 
-	return result;
+	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->getClosetGridPoint(value.toPointF()) : result;
 }
 

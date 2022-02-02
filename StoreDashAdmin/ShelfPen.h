@@ -12,5 +12,6 @@ public:
 
 private:
 	std::optional<Shelf*> m_shelf;
+	QPointF m_start{};
 };
 

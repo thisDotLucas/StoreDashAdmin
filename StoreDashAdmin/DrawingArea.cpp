@@ -2,12 +2,17 @@
 #include "Shelf.h"
 #include "ShelfPen.h"
 #include "StoreDashAdmin.h"
+#include "GridScene.h"
 #include <iostream>
 
 DrawingArea::DrawingArea(QWidget* parent) : QGraphicsView(parent)
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setSceneRect(QRect{ 0, 0, width(), height() });
+	setTransformationAnchor(QGraphicsView::NoAnchor);
+	setDragMode(QGraphicsView::NoDrag);
+	//setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	setMouseTracking(true);
 }
 
@@ -25,62 +30,110 @@ void DrawingArea::setPicker(std::shared_ptr<Picker> picker)
 
 void DrawingArea::mousePressEvent(QMouseEvent* e)
 {
-	if (m_picker.has_value())
+	if (e->button() == Qt::LeftButton && e->modifiers().testFlag(Qt::ControlModifier))
+	{
+		_startPos = mapToScene(e->pos());
+		e->accept();
+		setCursor(Qt::ClosedHandCursor);
+	}
+	else
 	{
 		QGraphicsView::mousePressEvent(e);
 
-		auto item = m_picker.value()->pick(this, mapToScene(e->pos()));
-		if (item.has_value())
+		if (m_picker.has_value())
 		{
-			scene()->addItem(item.value());
-			item.value()->update();
-			m_picker = std::nullopt;
+			auto item = m_picker.value()->pick(this, mapToScene(e->pos()));
+			if (item.has_value())
+			{
+				scene()->addItem(item.value());
+				item.value()->update();
+				m_picker = std::nullopt;
+			}
+		}
+		else if (m_pen.has_value())
+		{
+			const QPointF point = mapToScene(e->pos());
+			scene()->addItem(m_pen.value()->press(getClosestGridPoint(point)));
 		}
 	}
-	else if (m_pen.has_value())
-	{
-		QPointF point = mapToScene(e->pos());
-		scene()->addItem(m_pen.value()->press(point));
-		QGraphicsView::mousePressEvent(e);
-	}
+
 }
 
 void DrawingArea::mouseReleaseEvent(QMouseEvent* e)
 {
-	if (m_pen.has_value())
+	if (e->button() == Qt::LeftButton && e->modifiers().testFlag(Qt::ControlModifier))
 	{
-		m_pen.value()->lift();
-		m_pen = std::nullopt;
+		unsetCursor();
 	}
+	else
+	{
+		if (m_pen.has_value())
+		{
+			m_pen.value()->lift();
+			m_pen = std::nullopt;
+		}
 
-	QGraphicsView::mouseReleaseEvent(e);
+		QGraphicsView::mouseReleaseEvent(e);
+	}
 }
 
 void DrawingArea::mouseMoveEvent(QMouseEvent* e)
 {
 	QPointF point = mapToScene(e->pos());
 
-	if (m_pen.has_value())
+	if (e->buttons() & Qt::LeftButton && e->modifiers().testFlag(Qt::ControlModifier))
 	{
-		m_pen.value()->move(point);
+		const QPointF delta = mapToScene(e->pos()) - _startPos;
+
+		QRectF sceneR = sceneRect();
+		sceneR.translate(-1 * delta.x(), -1 * delta.y());
+		setSceneRect(sceneR);
+
+		_startPos = mapToScene(e->pos());
+
+		update();
+		e->accept();
+		return;
 	}
 
 	((StoreDashAdmin*)this->window())->setCursorLabel(point);
+
+	if (m_pen.has_value())
+	{
+		m_pen.value()->move(getClosestGridPoint(point));
+	}
 
 	QGraphicsView::mouseMoveEvent(e);
 }
 
 void DrawingArea::wheelEvent(QWheelEvent* event)
 {
-	setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-	constexpr double scaleFactor = 1.5;
+	const QPointF pos = mapToScene(event->position().toPoint());
 
-	if (event->angleDelta().y() > 0)
+	// scale from wheel angle
+	const float delta = 1.0f + event->angleDelta().y() / 1000.0f;
+
+	QRectF sceneR = sceneRect();
+	if (delta < 1.f || transform().m11() < 17.0 /* Max zoom */)
 	{
-		scale(scaleFactor, scaleFactor);
+		sceneR.translate((pos - sceneR.center()));
+		setSceneRect(sceneR);
+
+		cursor().setPos(mapToGlobal(mapFromScene(pos.toPoint())));
+
+		scale(delta, delta);
 	}
-	else
-	{
-		scale(1 / scaleFactor, 1 / scaleFactor);
-	}
+
+	update();
+	event->accept();
+}
+
+QPointF DrawingArea::getClosestGridPoint(const QPointF& point)
+{
+	GridScene* gridScene = dynamic_cast<GridScene*> (scene());
+	int gridSize = gridScene->getGridSize();
+	qreal x = round(point.x() / gridSize) * gridSize;
+	qreal y = round(point.y() / gridSize) * gridSize;
+
+	return QPointF{ x, y };
 }

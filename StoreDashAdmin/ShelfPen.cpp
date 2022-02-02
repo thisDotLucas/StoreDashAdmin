@@ -3,6 +3,7 @@
 Shelf* ShelfPen::press(const QPointF& point)
 {
 	m_shelf = new Shelf(point.x(), point.y());
+	m_start = point;
 	return m_shelf.value();
 }
 
@@ -15,8 +16,7 @@ Shelf* ShelfPen::move(const QPointF& point)
 {
 	if (m_shelf.has_value())
 	{
-		QRectF originalRect = m_shelf.value()->rect();
-		QRectF rect(originalRect.x(), originalRect.y(), point.x() - originalRect.x(), point.y() - originalRect.y());
+		QRectF rect(m_start.x(), m_start.y(), point.x() - m_start.x(), point.y() - m_start.y());
 		m_shelf.value()->setRect(rect.normalized());
 		m_shelf.value()->update();
 

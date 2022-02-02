@@ -1,5 +1,6 @@
 #include "Shelf.h"
 #include "ShelfMapper.h"
+#include "GridScene.h"
 #include <iostream>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QGraphicsScene>
@@ -14,6 +15,7 @@ Shelf::Shelf(QJsonObject object)
 	setRect(QRectF(x, y, w, h));
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
+	setFlag(ItemSendsScenePositionChanges);
 }
 
 Shelf::Shelf(const int x, const int y)
@@ -21,6 +23,7 @@ Shelf::Shelf(const int x, const int y)
 	setRect(QRectF(x, y, 0, 0));
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
+	setFlag(ItemSendsScenePositionChanges);
 }
 
 void Shelf::remove()
@@ -75,4 +78,11 @@ void Shelf::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 		w->setWindowModality(Qt::WindowModality::ApplicationModal);
 		w->show();
 	}
+}
+
+QVariant Shelf::itemChange(GraphicsItemChange change, const QVariant& value)
+{
+	auto result = QGraphicsItem::itemChange(change, value);
+
+	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->getClosetGridPoint(value.toPointF()) : result;
 }

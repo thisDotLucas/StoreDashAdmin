@@ -9,6 +9,13 @@
 static constexpr const char* CONTEXT_MENU_CONNECT_TO = "Connect to...";
 static int runningNumber = 0;
 
+enum class NodeType
+{
+	Basic,
+	Start,
+	End
+};
+
 class Connection;
 
 class Node : public QGraphicsEllipseItem, public Serializable
@@ -24,6 +31,8 @@ public:
 	void isStartFor(Connection* connection) { m_startFor.insert(connection); };
 	void isEndFor(Connection* connection) { m_endFor.insert(connection); };
 	void removeConnection(Connection* connection);
+	void setNodeType(const NodeType type);
+	NodeType getNodeType() const { return m_type; };
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -35,4 +44,5 @@ private:
 	int m_id;
 	std::set<Connection*> m_startFor;
 	std::set<Connection*> m_endFor;
+	NodeType m_type{ NodeType::Basic };
 };

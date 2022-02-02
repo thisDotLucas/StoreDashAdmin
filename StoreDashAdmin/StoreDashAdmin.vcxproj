@@ -92,6 +92,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="StoreDashAdmin.qrc" />
+    <QtUic Include="NodeType.ui" />
     <QtUic Include="MapShelf.ui" />
     <QtUic Include="StoreDashAdmin.ui" />
     <QtMoc Include="StoreDashAdmin.h" />
@@ -101,8 +102,10 @@
     <ClCompile Include="DrawableEntity.cpp" />
     <ClCompile Include="DrawingArea.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="GridScene.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodePen.cpp" />
+    <ClCompile Include="NodeTypeSelectTool.cpp" />
     <ClCompile Include="Pen.cpp" />
     <ClCompile Include="Picker.cpp" />
     <ClCompile Include="Serializable.cpp" />
@@ -119,8 +122,10 @@
     <ClInclude Include="DrawableEntity.h" />
     <ClInclude Include="DrawingArea.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="GridScene.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodePen.h" />
+    <QtMoc Include="NodeTypeSelectTool.h" />
     <ClInclude Include="Pen.h" />
     <ClInclude Include="Picker.h" />
     <ClInclude Include="Serializable.h" />
