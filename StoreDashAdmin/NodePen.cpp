@@ -15,11 +15,6 @@ Node* NodePen::move(const QPointF& point)
 {
 	if (m_node.has_value())
 	{
-		//QRectF originalRect = m_node.value()->rect();
-		//QRectF rect(originalRect.x(), originalRect.y(), point.x() - originalRect.x(), point.y() - originalRect.y());
-		//m_node.value()->setRect(rect.normalized());
-		//m_node.value()->update();
-
 		return m_node.value();
 	}
 

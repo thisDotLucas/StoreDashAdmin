@@ -1,4 +1,6 @@
 #include "ShelfPen.h"
+#include "Connection.h"
+#include "Node.h"
 
 Shelf* ShelfPen::press(const QPointF& point)
 {
@@ -9,6 +11,19 @@ Shelf* ShelfPen::press(const QPointF& point)
 
 Shelf* ShelfPen::lift()
 {
+	auto items = m_shelf.value()->collidingItems();
+	for (const auto& item : items)
+	{
+		if (dynamic_cast<Connection*>(item))
+		{
+			((Connection*)item)->remove();
+		}
+		else if (dynamic_cast<Node*>(item))
+		{
+			((Node*)item)->remove();
+		}
+	}
+
 	return m_shelf.value();
 }
 

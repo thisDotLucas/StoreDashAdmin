@@ -1,5 +1,6 @@
 #include "Connection.h"
 #include "qjsonarray.h"
+#include "Shelf.h"
 #include <QtWidgets/QGraphicsScene>
 
 Connection::Connection(QJsonObject object, const std::map<int, Node*>& nodeMap) : m_start(nullptr), m_end(nullptr)
@@ -37,6 +38,12 @@ void Connection::setEnd(Node* end)
 			createLine();
 		}
 	}
+}
+
+bool Connection::hasCollissions() const
+{
+	QList<QGraphicsItem*> items = collidingItems();
+	return std::ranges::any_of(items, [](QGraphicsItem* item) { return dynamic_cast<Shelf*>(item); });
 }
 
 std::optional<QJsonObject> Connection::serialize(QJsonObject& root)
@@ -105,3 +112,5 @@ void Connection::createLine()
 		m_end->isEndFor(this);
 	}
 }
+
+

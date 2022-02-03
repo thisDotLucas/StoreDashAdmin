@@ -12,10 +12,6 @@ StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 	ui.graphicsView->setScene(new GridScene(this));
-	//ui.graphicsView->scene()->setSceneRect(QRect{ 0, 0, ui.graphicsView->width(), ui.graphicsView->height() });
-	//ui.graphicsView->setSceneRect(QRect{ -1 * ui.graphicsView->width(), ui.graphicsView->height(), ui.graphicsView->width(), ui.graphicsView->height() });
-
-	//ui.graphicsView->centerOn(0, 0);
 
 	connect(ui.shelfButton, &QPushButton::pressed, this, &StoreDashAdmin::shelfButtonPressed);
 	connect(ui.nodeButton, &QPushButton::pressed, this, &StoreDashAdmin::nodeButtonPressed);
@@ -65,10 +61,14 @@ void StoreDashAdmin::saveButtonPressed()
 
 	if (json.size())
 	{
-		QFile file("C:/Users/lukke/OneDrive/Desktop/storedashJson/test.json");
-		file.open(QIODevice::WriteOnly);
-		file.write(json);
-		file.close();
+		auto fileName = QFileDialog::getSaveFileName(this, tr("Save as"), "", tr("JSON (*.json)"));
+		if (!fileName.isEmpty())
+		{
+			QFile file(fileName);
+			file.open(QIODevice::WriteOnly);
+			file.write(json);
+			file.close();
+		}
 	}
 }
 

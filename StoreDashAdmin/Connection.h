@@ -12,6 +12,7 @@ public:
 	void setStart(Node* start);
 	void setEnd(Node* end);
 	bool isValid() const { return m_start && m_end; }
+	bool hasCollissions() const;
 	Node* start() const { return m_start; }
 	Node* end() const { return m_end; }
 	std::optional<QJsonObject> serialize(QJsonObject& root);

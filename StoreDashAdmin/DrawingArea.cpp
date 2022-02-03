@@ -1,6 +1,7 @@
 #include "DrawingArea.h"
 #include "Shelf.h"
 #include "ShelfPen.h"
+#include "Connection.h"
 #include "StoreDashAdmin.h"
 #include "GridScene.h"
 #include <iostream>
@@ -12,7 +13,6 @@ DrawingArea::DrawingArea(QWidget* parent) : QGraphicsView(parent)
 	setSceneRect(QRect{ 0, 0, width(), height() });
 	setTransformationAnchor(QGraphicsView::NoAnchor);
 	setDragMode(QGraphicsView::NoDrag);
-	//setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	setMouseTracking(true);
 }
 
@@ -46,7 +46,12 @@ void DrawingArea::mousePressEvent(QMouseEvent* e)
 			if (item.has_value())
 			{
 				scene()->addItem(item.value());
-				item.value()->update();
+
+				if (dynamic_cast<Connection*>(item.value()) && ((Connection*)item.value())->hasCollissions())
+					((Connection*)item.value())->remove();
+				else
+					item.value()->update();
+
 				m_picker = std::nullopt;
 			}
 		}

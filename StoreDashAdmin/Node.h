@@ -23,6 +23,7 @@ class Node : public QGraphicsEllipseItem, public Serializable
 public:
 	Node(QJsonObject object);
 	Node(const int x, const int y, const double radius);
+	QPointF getCenterOfSceneBoundingRect();
 	void setPickedColor();
 	void resetColor();
 	std::optional<QJsonObject> serialize(QJsonObject& root);
@@ -33,6 +34,8 @@ public:
 	void removeConnection(Connection* connection);
 	void setNodeType(const NodeType type);
 	NodeType getNodeType() const { return m_type; };
+	void clearNavigationLines();
+	void setNavigationLines(const QPointF& fromPoint);
 
 protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event);
@@ -44,5 +47,6 @@ private:
 	int m_id;
 	std::set<Connection*> m_startFor;
 	std::set<Connection*> m_endFor;
+	std::vector<QGraphicsItem*> m_navigationLines;
 	NodeType m_type{ NodeType::Basic };
 };

@@ -70,6 +70,12 @@ Node::Node(const int x, const int y, const double radius) : m_id(runningNumber++
 	setFlag(ItemIsSelectable);
 }
 
+QPointF Node::getCenterOfSceneBoundingRect()
+{
+	QRectF boundingRect = sceneBoundingRect();
+	return { boundingRect.x() + boundingRect.width() / 2 , boundingRect.y() + boundingRect.height() / 2 };
+}
+
 void Node::setPickedColor()
 {
 	QBrush brush;
@@ -202,17 +208,70 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant& value)
 {
 	auto result = QGraphicsItem::itemChange(change, value);
+	auto point = value.toPointF();
+
+	clearNavigationLines();
 
 	if (change == ItemPositionChange && scene())
 	{
 		// Updates possible connections
-		QRectF boundingRect = sceneBoundingRect();
-		QPointF newMidPoint{ boundingRect.x() + boundingRect.width() / 2 , boundingRect.y() + boundingRect.height() / 2 };
+		QPointF newMidPoint = getCenterOfSceneBoundingRect();
 
 		std::ranges::for_each(m_startFor, [&](Connection* c) { c->moveStart(newMidPoint); });
 		std::ranges::for_each(m_endFor, [&](Connection* c) { c->moveEnd(newMidPoint); });
+
+		setNavigationLines(newMidPoint);
 	}
 
-	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->getClosetGridPoint(value.toPointF()) : result;
+	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->toClosetGridPoint(value.toPointF()) : result;
+}
+
+void Node::clearNavigationLines()
+{
+	for (const auto& line : m_navigationLines)
+	{
+		scene()->removeItem(line);
+	}
+
+	m_navigationLines.clear();
+}
+
+void Node::setNavigationLines(const QPointF& fromPoint)
+{
+	QPen pen;
+	pen.setColor(QColor{ 255, 0, 0 });
+
+	std::vector<std::vector<QPointF>> pointsAtDirection;
+	const auto directions = { Direction::Up, Direction::Right, Direction::Down, Direction::Left };
+	for (const auto direction : directions)
+		pointsAtDirection.push_back(((GridScene*)scene())->getNGridPointsInDirection(fromPoint, 100, direction));
+
+	int iDirection{ 0 };
+	for (const auto& points : pointsAtDirection)
+	{
+		for (const auto& point : points)
+		{
+			auto item = scene()->itemAt(point, transform());
+			auto node = dynamic_cast<Node*>(item);
+
+			QPointF adjustedToPoint = point;
+			((GridScene*)scene())->adjustPointByDirection(adjustedToPoint, *(std::begin(directions) + iDirection));
+
+			if (node && item != this && node->getCenterOfSceneBoundingRect() == adjustedToPoint)
+			{
+				QPointF adjustedFromPoint = fromPoint;
+				((GridScene*)scene())->adjustPointByDirection(adjustedFromPoint, *(std::begin(directions) + iDirection));
+				QLineF line{ adjustedFromPoint.x(), adjustedFromPoint.y(), point.x(), point.y() };
+				m_navigationLines.push_back(scene()->addLine(line, pen));
+				break;
+			}
+			else if (dynamic_cast<Shelf*>(item))
+			{
+				break;
+			}
+		}
+
+		iDirection++;
+	}
 }
 

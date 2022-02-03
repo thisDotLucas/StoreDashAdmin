@@ -84,5 +84,5 @@ QVariant Shelf::itemChange(GraphicsItemChange change, const QVariant& value)
 {
 	auto result = QGraphicsItem::itemChange(change, value);
 
-	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->getClosetGridPoint(value.toPointF()) : result;
+	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->toClosetGridPoint(value.toPointF()) : result;
 }
