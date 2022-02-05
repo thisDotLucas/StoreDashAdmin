@@ -121,6 +121,16 @@ void StoreDashAdmin::loadButtonPressed()
 	}
 }
 
+void StoreDashAdmin::keyPressEvent(QKeyEvent* e)
+{
+	if (e->key() == Qt::Key_Escape)
+	{
+		ui.graphicsView->clearPenAndPicker();
+	}
+
+	QWidget::keyPressEvent(e);
+}
+
 //void StoreDashAdmin::organizationButtonPressed()
 //{
 //	organizationEditorWindow;// = new OrganizationEditor(this);

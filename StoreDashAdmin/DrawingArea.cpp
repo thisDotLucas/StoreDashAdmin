@@ -28,11 +28,21 @@ void DrawingArea::setPicker(std::shared_ptr<Picker> picker)
 	m_pen = std::nullopt;
 }
 
+void DrawingArea::keyPressEvent(QKeyEvent* e)
+{
+	if (e->key() == Qt::Key_Escape)
+	{
+		clearPenAndPicker();
+	}
+
+	QGraphicsView::keyPressEvent(e);
+}
+
 void DrawingArea::mousePressEvent(QMouseEvent* e)
 {
 	if (e->button() == Qt::LeftButton && e->modifiers().testFlag(Qt::ControlModifier))
 	{
-		_startPos = mapToScene(e->pos());
+		m_startPos = mapToScene(e->pos());
 		e->accept();
 		setCursor(Qt::ClosedHandCursor);
 	}
@@ -61,7 +71,6 @@ void DrawingArea::mousePressEvent(QMouseEvent* e)
 			scene()->addItem(m_pen.value()->press(getClosestGridPoint(point)));
 		}
 	}
-
 }
 
 void DrawingArea::mouseReleaseEvent(QMouseEvent* e)
@@ -80,6 +89,8 @@ void DrawingArea::mouseReleaseEvent(QMouseEvent* e)
 
 		QGraphicsView::mouseReleaseEvent(e);
 	}
+
+	updateCursor();
 }
 
 void DrawingArea::mouseMoveEvent(QMouseEvent* e)
@@ -88,13 +99,13 @@ void DrawingArea::mouseMoveEvent(QMouseEvent* e)
 
 	if (e->buttons() & Qt::LeftButton && e->modifiers().testFlag(Qt::ControlModifier))
 	{
-		const QPointF delta = mapToScene(e->pos()) - _startPos;
+		const QPointF delta = mapToScene(e->pos()) - m_startPos;
 
 		QRectF sceneR = sceneRect();
 		sceneR.translate(-1 * delta.x(), -1 * delta.y());
 		setSceneRect(sceneR);
 
-		_startPos = mapToScene(e->pos());
+		m_startPos = mapToScene(e->pos());
 
 		update();
 		e->accept();
@@ -107,6 +118,8 @@ void DrawingArea::mouseMoveEvent(QMouseEvent* e)
 	{
 		m_pen.value()->move(getClosestGridPoint(point));
 	}
+
+	updateCursor();
 
 	QGraphicsView::mouseMoveEvent(e);
 }
@@ -133,6 +146,14 @@ void DrawingArea::wheelEvent(QWheelEvent* event)
 	event->accept();
 }
 
+void DrawingArea::updateCursor()
+{
+	if ((m_pen.has_value() || m_picker.has_value()) && cursor().shape() != Qt::CrossCursor)
+		setCursor(Qt::CrossCursor);
+	else if (!(m_pen.has_value() || m_picker.has_value()) && cursor().shape() != Qt::ArrowCursor)
+		setCursor(Qt::ArrowCursor);
+}
+
 QPointF DrawingArea::getClosestGridPoint(const QPointF& point)
 {
 	GridScene* gridScene = dynamic_cast<GridScene*> (scene());
@@ -141,4 +162,11 @@ QPointF DrawingArea::getClosestGridPoint(const QPointF& point)
 	qreal y = round(point.y() / gridSize) * gridSize;
 
 	return QPointF{ x, y };
+}
+
+void DrawingArea::clearPenAndPicker()
+{
+	m_pen = std::nullopt;
+	m_picker = std::nullopt;
+	updateCursor();
 }

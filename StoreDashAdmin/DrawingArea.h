@@ -25,20 +25,22 @@ public:
 	void setPen(std::shared_ptr<Pen> pen);
 	void setPicker(std::shared_ptr<Picker> pen);
 	QPointF getClosestGridPoint(const QPointF& point);
+	void clearPenAndPicker();
 
 protected:
 	void mousePressEvent(QMouseEvent* e);
 	void mouseReleaseEvent(QMouseEvent* e);
 	void mouseMoveEvent(QMouseEvent* e);
+	virtual void keyPressEvent(QKeyEvent* e);
 	virtual void wheelEvent(QWheelEvent* event);
 
 private:
+	void updateCursor();
+
 	std::optional<std::shared_ptr<Pen>> m_pen;
 	std::optional<std::shared_ptr<Picker>> m_picker;
 
 	// start position for pan
-	QPointF _startPos;
-	int _originX{};
-	int _originY{};
+	QPointF m_startPos;
 };
 

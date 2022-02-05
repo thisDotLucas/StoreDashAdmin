@@ -4,6 +4,7 @@
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsScene>
 #include <QtGui>
+//#include <QtNetwork>
 #include "ui_StoreDashAdmin.h"
 #include "DrawingArea.h"
 
@@ -16,6 +17,7 @@ public:
 	void setCursorLabel(const QPointF& point);
 
 private slots:
+	virtual void keyPressEvent(QKeyEvent* e);
 	void shelfButtonPressed();
 	void nodeButtonPressed();
 	void connectionButtonPressed();
@@ -23,5 +25,7 @@ private slots:
 	void loadButtonPressed();
 
 private:
+	//void postRequest(QByteArray& postData);
+	//void onFinish(QNetworkReply* reply);
 	Ui::StoreDashAdminClass ui;
 };
