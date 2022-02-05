@@ -18,6 +18,10 @@ StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 	connect(ui.connectionButton, &QPushButton::pressed, this, &StoreDashAdmin::connectionButtonPressed);
 	connect(ui.saveButton, &QPushButton::pressed, this, &StoreDashAdmin::saveButtonPressed);
 	connect(ui.loadButton, &QPushButton::pressed, this, &StoreDashAdmin::loadButtonPressed);
+
+	connect(this, &StoreDashAdmin::hasToken, this, &StoreDashAdmin::getIds);
+	getToken();
+
 }
 
 void StoreDashAdmin::shelfButtonPressed()
@@ -121,6 +125,68 @@ void StoreDashAdmin::loadButtonPressed()
 	}
 }
 
+void StoreDashAdmin::getIds()
+{
+	QNetworkRequest backendRequest(QUrl{ "https://products-api.eu1.cluster.storeda.sh/product/v1/layout" });
+	backendRequest.setRawHeader(QByteArray("Authorization"), QByteArray(("Bearer " + m_authToken.value().toStdString()).c_str()));
+	backendRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
+
+	m_manager2 = new QNetworkAccessManager();
+	m_reply2 = m_manager2->get(backendRequest);
+
+	QObject::connect(m_reply2, &QNetworkReply::finished, this, &StoreDashAdmin::gotIds);
+}
+
+void StoreDashAdmin::gotToken()
+{
+	if (m_reply->error() == QNetworkReply::NoError)
+	{
+		QString token = QJsonDocument::fromJson(m_reply->readAll()).object().value("access_token").toString();
+		setToken(token);
+	}
+	else
+	{
+		QString err = m_reply->errorString();
+		qDebug() << err;
+	}
+	m_reply->deleteLater();
+}
+
+void StoreDashAdmin::gotIds()
+{
+	if (m_reply2->error() == QNetworkReply::NoError)
+	{
+		QJsonObject json = QJsonDocument::fromJson(m_reply2->readAll()).object().value("data").toObject();
+		for (const auto& key : json.keys())
+		{
+			std::vector<QString> values;
+			for (const auto& value : json.value(key).toArray())
+				values.push_back(QString{ std::to_string(value.toInt()).c_str() });
+
+			m_ids.insert({ key, values });
+		}
+	}
+	else
+	{
+		QString err = m_reply2->errorString();
+		qDebug() << err;
+	}
+	m_reply2->deleteLater();
+}
+
+void StoreDashAdmin::getToken()
+{
+	m_manager = new QNetworkAccessManager();
+
+	QNetworkRequest request(QUrl{ "https://storedash-project.eu.auth0.com/oauth/token" });
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+	QString body = "{ \"client_id\": \"BzL4Q8lag6ZKEjOcljqlOD5Dlwjaztcq\", \"client_secret\" : \"-53CuLQAslaOQzSOF9eWQv7C2w8svDfxI9jXRJltjKYDbgPC9dFwSW8GqUIilbyn\", \"audience\" : \"https://products-api.eu1.cluster.storeda.sh/\", \"grant_type\" : \"client_credentials\" }";
+	m_reply = m_manager->post(request, body.toUtf8());
+
+	QObject::connect(m_reply, &QNetworkReply::finished, this, &StoreDashAdmin::gotToken);
+}
+
 void StoreDashAdmin::keyPressEvent(QKeyEvent* e)
 {
 	if (e->key() == Qt::Key_Escape)
@@ -130,10 +196,3 @@ void StoreDashAdmin::keyPressEvent(QKeyEvent* e)
 
 	QWidget::keyPressEvent(e);
 }
-
-//void StoreDashAdmin::organizationButtonPressed()
-//{
-//	organizationEditorWindow;// = new OrganizationEditor(this);
-//	organizationEditorWindow.setWindowModality(Qt::WindowModality::WindowModal);
-//	organizationEditorWindow.show();
-//}

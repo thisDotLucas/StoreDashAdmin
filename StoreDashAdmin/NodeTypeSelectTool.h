@@ -3,7 +3,6 @@
 #include <QtWidgets/QWidget>
 #include <QtGui>
 #include "ui_NodeType.h"
-#include "DrawingArea.h"
 #include "Node.h"
 #include <optional>
 

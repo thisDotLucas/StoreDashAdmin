@@ -1,6 +1,7 @@
 #include "Shelf.h"
 #include "ShelfMapper.h"
 #include "GridScene.h"
+#include "StoreDashAdmin.h"
 #include <iostream>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QGraphicsScene>
@@ -74,7 +75,7 @@ void Shelf::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 	}
 	else if (a && a->text() == "Map")
 	{
-		ShelfMapper* w = new ShelfMapper(this, (QWidget*)this->scene()->parent()->parent());
+		ShelfMapper* w = new ShelfMapper(this, ((StoreDashAdmin*)this->scene()->parent())->getIdMap(), (QWidget*)this->scene()->parent()->parent());
 		w->setWindowModality(Qt::WindowModality::ApplicationModal);
 		w->show();
 	}

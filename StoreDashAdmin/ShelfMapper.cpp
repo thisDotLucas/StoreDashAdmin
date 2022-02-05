@@ -1,15 +1,15 @@
 #include "ShelfMapper.h"
 
-ShelfMapper::ShelfMapper(Shelf* shelf, QWidget* parent) : m_shelf(shelf)
+ShelfMapper::ShelfMapper(Shelf* shelf, std::map<QString, std::vector<QString>> ids, QWidget* parent) : m_shelf(shelf), m_ids(ids)
 {
 	ui.setupUi(this);
 	connect(ui.okButton, &QPushButton::pressed, this, &ShelfMapper::okButtonPressed);
+	connect(ui.cancelButton, &QPushButton::pressed, this, &ShelfMapper::cancelButtonPressed);
+	connect(ui.moduleList, &QListWidget::currentItemChanged, this, &ShelfMapper::moduleChanged);
+	connect(ui.shelfList, &QListWidget::currentItemChanged, this, &ShelfMapper::shelfChanged);
 
-	if (m_shelf->getModuleId().has_value())
-		ui.textEdit->setText(QString(m_shelf->getModuleId().value().c_str()));
-
-	if (m_shelf->getShelfId().has_value())
-		ui.textEdit_2->setText(QString(m_shelf->getShelfId().value().c_str()));
+	for (const auto& [_module, _] : m_ids)
+		ui.moduleList->addItem(_module);
 }
 
 void ShelfMapper::okButtonPressed()
@@ -21,20 +21,36 @@ void ShelfMapper::okButtonPressed()
 	auto shelfId = getShelfId();
 	if (shelfId.has_value())
 		m_shelf->setShelfId(shelfId.value());
+
+	close();
+}
+
+void ShelfMapper::cancelButtonPressed()
+{
+	close();
+}
+
+void ShelfMapper::moduleChanged()
+{
+	m_selectedModule = ui.moduleList->currentItem()->text().toStdString();
+
+	m_selectedShelf = std::nullopt;
+	ui.shelfList->clear();
+	for (const auto& shelf : m_ids[ui.moduleList->currentItem()->text()])
+		ui.shelfList->addItem(shelf);
+}
+
+void ShelfMapper::shelfChanged()
+{
+	m_selectedShelf = ui.moduleList->currentItem()->text().toStdString();
 }
 
 std::optional<std::string> ShelfMapper::getModuleId() const
 {
-	if (ui.textEdit->toPlainText().isEmpty())
-		return std::nullopt;
-
-	return ui.textEdit->toPlainText().toStdString();
+	return m_selectedModule;
 }
 
 std::optional<std::string> ShelfMapper::getShelfId() const
 {
-	if (ui.textEdit_2->toPlainText().isEmpty())
-		return std::nullopt;
-
-	return ui.textEdit_2->toPlainText().toStdString();
+	return m_selectedShelf;
 }

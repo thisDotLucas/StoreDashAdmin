@@ -3,8 +3,8 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsScene>
+#include <QtNetwork>
 #include <QtGui>
-//#include <QtNetwork>
 #include "ui_StoreDashAdmin.h"
 #include "DrawingArea.h"
 
@@ -15,6 +15,9 @@ class StoreDashAdmin : public QWidget
 public:
 	StoreDashAdmin(QWidget* parent = Q_NULLPTR);
 	void setCursorLabel(const QPointF& point);
+	void setIdMap(std::map<std::string, std::vector<std::string>>);
+	void setToken(const QString& token) { m_authToken = token; emit hasToken(); };
+	std::map<QString, std::vector<QString>> getIdMap() const { return m_ids; }
 
 private slots:
 	virtual void keyPressEvent(QKeyEvent* e);
@@ -23,9 +26,20 @@ private slots:
 	void connectionButtonPressed();
 	void saveButtonPressed();
 	void loadButtonPressed();
+	void getIds();
+	void gotToken();
+	void gotIds();
+
+signals:
+	void hasToken();
 
 private:
-	//void postRequest(QByteArray& postData);
-	//void onFinish(QNetworkReply* reply);
+	void getToken();
 	Ui::StoreDashAdminClass ui;
+	std::optional<QString> m_authToken;
+	QNetworkAccessManager* m_manager;
+	QNetworkReply* m_reply;
+	QNetworkAccessManager* m_manager2;
+	QNetworkReply* m_reply2;
+	std::map<QString, std::vector<QString>> m_ids;
 };
