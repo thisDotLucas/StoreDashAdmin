@@ -208,7 +208,15 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
+	auto copyStartFor = m_startFor;
+	std::ranges::for_each(copyStartFor, [&](Connection* c) { if (c->hasCollissions()) c->remove(); else c->show(); });
+
+	auto copyEndFor = m_endFor;
+	std::ranges::for_each(copyEndFor, [&](Connection* c) { if (c->hasCollissions()) c->remove(); else c->show(); });
+
+	clearNavigationLines();
 	update();
+
 	QGraphicsItem::mouseReleaseEvent(event);
 }
 

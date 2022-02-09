@@ -40,3 +40,8 @@ Shelf* ShelfPen::move(const QPointF& point)
 
 	return nullptr;
 }
+
+void ShelfPen::hover(QGraphicsScene* scene, const QPointF& point)
+{
+	return;
+}

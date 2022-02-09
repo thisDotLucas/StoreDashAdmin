@@ -74,6 +74,8 @@ void Connection::moveStart(const QPointF& newPoint)
 	QPointF endRectMidPoint{ endBoundingRect.x() + endBoundingRect.width() / 2 , endBoundingRect.y() + endBoundingRect.height() / 2 };
 
 	setLine(newPoint.x(), newPoint.y(), endRectMidPoint.x(), endRectMidPoint.y());
+
+	hasCollissions() ? hide() : show();
 }
 
 void Connection::moveEnd(const QPointF& newPoint)
@@ -82,6 +84,8 @@ void Connection::moveEnd(const QPointF& newPoint)
 	QPointF startRectMidPoint{ startBoundingRect.x() + startBoundingRect.width() / 2 , startBoundingRect.y() + startBoundingRect.height() / 2 };
 
 	setLine(startRectMidPoint.x(), startRectMidPoint.y(), newPoint.x(), newPoint.y());
+
+	hasCollissions() ? hide() : show();
 }
 
 void Connection::mousePressEvent(QGraphicsSceneMouseEvent* event)
