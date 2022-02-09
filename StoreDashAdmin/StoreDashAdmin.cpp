@@ -106,7 +106,7 @@ void StoreDashAdmin::loadButtonPressed()
 			QJsonArray nodes = object.value("Nodes").toArray();
 			for (const auto& node : nodes)
 			{
-				Node* nodeItem = new Node{ node.toObject() };
+				Node* nodeItem = new Node{ node.toObject(), getIdMap() };
 				nodeMap.insert({ nodeItem->getId(), nodeItem });
 
 				ui.graphicsView->scene()->addItem(nodeItem);
@@ -159,9 +159,9 @@ void StoreDashAdmin::gotIds()
 		QJsonObject json = QJsonDocument::fromJson(m_reply2->readAll()).object().value("data").toObject();
 		for (const auto& key : json.keys())
 		{
-			std::vector<QString> values;
+			std::set<QString> values;
 			for (const auto& value : json.value(key).toArray())
-				values.push_back(QString{ std::to_string(value.toInt()).c_str() });
+				values.insert(QString{ std::to_string(value.toInt()).c_str() });
 
 			m_ids.insert({ key, values });
 		}

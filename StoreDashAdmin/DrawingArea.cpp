@@ -148,7 +148,9 @@ void DrawingArea::wheelEvent(QWheelEvent* event)
 
 void DrawingArea::updateCursor()
 {
-	if ((m_pen.has_value() || m_picker.has_value()) && cursor().shape() != Qt::CrossCursor)
+	if (m_pen.has_value() && cursor().shape() != m_pen.value()->cursorShape())
+		setCursor(m_pen.value()->cursorShape());
+	else if (m_picker.has_value() && cursor().shape() != Qt::CrossCursor)
 		setCursor(Qt::CrossCursor);
 	else if (!(m_pen.has_value() || m_picker.has_value()) && cursor().shape() != Qt::ArrowCursor)
 		setCursor(Qt::ArrowCursor);

@@ -12,10 +12,6 @@ public:
 	Shelf(QJsonObject object);
 	Shelf(const int x, const int y);
 	void remove();
-	void setModuleId(std::string& id) { m_moduleId = id; };
-	void setShelfId(std::string& id) { m_shelfId = id; };
-	std::optional<std::string> getModuleId() const { return m_moduleId; };
-	std::optional<std::string> getShelfId() const { return m_shelfId; };
 	std::optional<QJsonObject> serialize(QJsonObject& root);
 
 protected:
@@ -23,9 +19,5 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value);
-
-private:
-	std::optional<std::string> m_moduleId;
-	std::optional<std::string> m_shelfId;
 };
 

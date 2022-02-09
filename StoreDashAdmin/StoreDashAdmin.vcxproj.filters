@@ -64,9 +64,6 @@
     <ClCompile Include="DrawableEntity.cpp">
       <Filter>Source Files\Drawing\Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Shelf.cpp">
-      <Filter>Source Files\Drawing\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Pen.cpp">
       <Filter>Source Files\Drawing\Pens</Filter>
     </ClCompile>
@@ -102,6 +99,9 @@
     </ClCompile>
     <ClCompile Include="GridScene.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shelf.cpp">
+      <Filter>Source Files\Drawing\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
