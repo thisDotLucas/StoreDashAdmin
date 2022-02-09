@@ -19,6 +19,18 @@ StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 	connect(ui.saveButton, &QPushButton::pressed, this, &StoreDashAdmin::saveButtonPressed);
 	connect(ui.loadButton, &QPushButton::pressed, this, &StoreDashAdmin::loadButtonPressed);
 
+	ui.shelfButton->setIcon(QIcon("stand.png"));
+	ui.nodeButton->setIcon(QIcon("neural.png"));
+	ui.connectionButton->setIcon(QIcon("chains.png"));
+	ui.saveButton->setIcon(QIcon("save.png"));
+	ui.loadButton->setIcon(QIcon("open-folder.png"));
+
+	ui.shelfButton->setIconSize(QSize(25, 25));
+	ui.nodeButton->setIconSize(QSize(25, 25));
+	ui.connectionButton->setIconSize(QSize(25, 25));
+	ui.saveButton->setIconSize(QSize(25, 25));
+	ui.loadButton->setIconSize(QSize(25, 25));
+
 	connect(this, &StoreDashAdmin::hasToken, this, &StoreDashAdmin::getIds);
 	getToken();
 
