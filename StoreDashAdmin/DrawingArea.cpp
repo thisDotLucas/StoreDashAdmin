@@ -116,7 +116,9 @@ void DrawingArea::mouseMoveEvent(QMouseEvent* e)
 
 	if (m_pen.has_value())
 	{
-		m_pen.value()->move(getClosestGridPoint(point));
+		auto r = m_pen.value()->move(getClosestGridPoint(point));
+		if (r == nullptr)
+			m_pen.value()->hover(scene(), getClosestGridPoint(point));
 	}
 
 	updateCursor();
