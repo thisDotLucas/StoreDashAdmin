@@ -3,7 +3,7 @@
 #include <QtWidgets/QWidget>
 #include <QtGui>
 #include "ui_MapShelf.h"
-#include "Shelf.h"
+#include "Node.h"
 #include <optional>
 
 
@@ -12,7 +12,7 @@ class ShelfMapper : public QDialog
 	Q_OBJECT
 
 public:
-	ShelfMapper(Shelf* shelf, std::map<QString, std::vector<QString>> ids, QWidget* parent = Q_NULLPTR);
+	ShelfMapper(Node* shelfNode, std::map<QString, std::set<QString>>* ids, QWidget* parent = Q_NULLPTR);
 	std::optional<std::string> getModuleId() const;
 	std::optional<std::string> getShelfId() const;
 
@@ -23,10 +23,12 @@ private slots:
 	void shelfChanged();
 
 private:
-	Shelf* m_shelf;
+	Node* m_shelfNode;
 	Ui::ShelfMapperDialog ui;
+	std::optional<std::string> m_selectedModuleAtStart;
+	std::optional<std::string> m_selectedShelfAtStart;
 	std::optional<std::string> m_selectedModule;
 	std::optional<std::string> m_selectedShelf;
-	std::map<QString, std::vector<QString>> m_ids;
+	std::map<QString, std::set<QString>>* m_ids;
 };
 

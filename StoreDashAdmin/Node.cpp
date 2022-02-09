@@ -5,10 +5,13 @@
 #include <QtWidgets/QMenu>
 #include "qjsonarray.h"
 #include "GridScene.h"
+#include "ShelfMapper.h"
+#include "StoreDashAdmin.h"
 #include <QtWidgets/QGraphicsScene>
 
 #define RGB_BASIC 105, 153, 93
 #define RGB_START 173, 216, 230
+#define RGB_SHELF 32, 178, 170
 #define RGB_END 48, 25, 52
 #define RGB_PICKED 244, 176, 123
 
@@ -22,6 +25,8 @@ namespace {
 			return "Start";
 		case NodeType::End:
 			return "End";
+		case NodeType::Shelf:
+			return "Shelf";
 		default:
 			return "Basic";
 		}
@@ -33,16 +38,26 @@ namespace {
 			return NodeType::Basic;
 		else if (typeName == "Start")
 			return NodeType::Start;
+		else if (typeName == "Shelf")
+			return NodeType::Shelf;
 		else
 			return NodeType::End;
 	}
 
 }
 
-Node::Node(QJsonObject object)
+Node::Node(QJsonObject object, std::map<QString, std::set<QString>>* ids)
 {
 	m_id = object.value("ID").toInt();
 	m_type = stringToNodeType(object.value("Type").toString().toStdString());
+
+	if (m_type == NodeType::Shelf)
+	{
+		m_moduleId = object.value("ModuleID").toString().toStdString();
+		m_shelfId = object.value("ShelfID").toString().toStdString();
+
+		ids->at(QString{ m_moduleId.value().c_str() }).erase(QString{ m_shelfId.value().c_str() });
+	}
 
 	const double x = object.value("X").toInt();
 	const double y = object.value("Y").toInt() * -1.0;
@@ -97,6 +112,9 @@ void Node::resetColor()
 	case NodeType::Start:
 		brush.setColor(QColor(RGB_START));
 		break;
+	case NodeType::Shelf:
+		brush.setColor(QColor(RGB_SHELF));
+		break;
 	default:
 		brush.setColor(QColor(RGB_END));
 		break;
@@ -112,6 +130,12 @@ std::optional<QJsonObject> Node::serialize(QJsonObject& root)
 	QJsonObject jsonNode;
 	jsonNode.insert("ID", m_id);
 	jsonNode.insert("Type", nodeTypeToString(m_type));
+
+	if (m_type == NodeType::Shelf)
+	{
+		jsonNode.insert("ModuleID", getModuleId().value_or("NULL").c_str());
+		jsonNode.insert("ShelfID", getShelfId().value_or("NULL").c_str());
+	}
 
 	QRectF boundingRect = this->sceneBoundingRect();
 	QPointF rectMidPoint{ boundingRect.x() + boundingRect.width() / 2 , boundingRect.y() + boundingRect.height() / 2 };
@@ -162,6 +186,9 @@ void Node::setNodeType(const NodeType type)
 	case NodeType::Start:
 		brush.setColor(QColor(RGB_START));
 		break;
+	case NodeType::Shelf:
+		brush.setColor(QColor(RGB_SHELF));
+		break;
 	default:
 		brush.setColor(QColor(RGB_END));
 		break;
@@ -191,6 +218,9 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 	menu.addAction("Delete");
 	menu.addAction("Type");
 
+	if (m_type == NodeType::Shelf)
+		menu.addAction("Map");
+
 	QAction* a = menu.exec(event->screenPos());
 
 	if (a && a->text() == "Delete")
@@ -200,6 +230,12 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 	else if (a && a->text() == "Type")
 	{
 		NodeTypeSelectTool* w = new NodeTypeSelectTool(this, (QWidget*)this->scene()->parent()->parent());
+		w->setWindowModality(Qt::WindowModality::ApplicationModal);
+		w->show();
+	}
+	else if (a && a->text() == "Map")
+	{
+		ShelfMapper* w = new ShelfMapper(this, ((StoreDashAdmin*)this->scene()->parent())->getIdMap(), (QWidget*)this->scene()->parent()->parent());
 		w->setWindowModality(Qt::WindowModality::ApplicationModal);
 		w->show();
 	}

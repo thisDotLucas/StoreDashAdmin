@@ -1,6 +1,6 @@
 #include "ShelfMapper.h"
 
-ShelfMapper::ShelfMapper(Shelf* shelf, std::map<QString, std::vector<QString>> ids, QWidget* parent) : m_shelf(shelf), m_ids(ids)
+ShelfMapper::ShelfMapper(Node* shelfNode, std::map<QString, std::set<QString>>* ids, QWidget* parent) : m_shelfNode(shelfNode), m_ids(ids)
 {
 	ui.setupUi(this);
 	connect(ui.okButton, &QPushButton::pressed, this, &ShelfMapper::okButtonPressed);
@@ -8,19 +8,41 @@ ShelfMapper::ShelfMapper(Shelf* shelf, std::map<QString, std::vector<QString>> i
 	connect(ui.moduleList, &QListWidget::currentItemChanged, this, &ShelfMapper::moduleChanged);
 	connect(ui.shelfList, &QListWidget::currentItemChanged, this, &ShelfMapper::shelfChanged);
 
-	for (const auto& [_module, _] : m_ids)
+	m_selectedModuleAtStart = shelfNode->getModuleId();
+	m_selectedShelfAtStart = shelfNode->getShelfId();
+
+	if (m_selectedModuleAtStart.has_value() && m_selectedShelfAtStart.has_value())
+	{
+		m_ids->at(QString{ m_selectedModuleAtStart.value().c_str() }).insert(QString{ m_selectedShelfAtStart.value().c_str() });
+	}
+
+	ui.moduleText->setText(QString{ shelfNode->getModuleId().value_or("").c_str() });
+	ui.shelfText->setText(QString{ shelfNode->getShelfId().value_or("").c_str() });
+
+	for (const auto& [_module, _] : *m_ids)
 		ui.moduleList->addItem(_module);
+
+	auto foundModuleItem = ui.moduleList->findItems(QString{ shelfNode->getModuleId().value_or("").c_str() }, Qt::MatchFlag::MatchExactly);
+	if (foundModuleItem.size() == 1)
+		ui.moduleList->setCurrentItem(foundModuleItem[0]);
+
+	auto foundShelfItem = ui.shelfList->findItems(QString{ shelfNode->getShelfId().value_or("").c_str() }, Qt::MatchFlag::MatchExactly);
+	if (foundShelfItem.size() == 1)
+		ui.shelfList->setCurrentItem(foundShelfItem[0]);
 }
 
 void ShelfMapper::okButtonPressed()
 {
 	auto moduleId = getModuleId();
-	if (moduleId.has_value())
-		m_shelf->setModuleId(moduleId.value());
-
 	auto shelfId = getShelfId();
-	if (shelfId.has_value())
-		m_shelf->setShelfId(shelfId.value());
+
+	if (moduleId.has_value() && shelfId.has_value())
+	{
+		m_shelfNode->setModuleId(moduleId.value());
+		m_shelfNode->setShelfId(shelfId.value());
+
+		m_ids->at(QString{ moduleId.value().c_str() }).erase(QString{ shelfId.value().c_str() });
+	}
 
 	close();
 }
@@ -33,16 +55,20 @@ void ShelfMapper::cancelButtonPressed()
 void ShelfMapper::moduleChanged()
 {
 	m_selectedModule = ui.moduleList->currentItem()->text().toStdString();
+	ui.moduleText->setText(QString{ m_selectedModule.value_or("").c_str() });
 
 	m_selectedShelf = std::nullopt;
+	ui.shelfText->setText(QString{ "" });
+
 	ui.shelfList->clear();
-	for (const auto& shelf : m_ids[ui.moduleList->currentItem()->text()])
+	for (const auto& shelf : m_ids->at(ui.moduleList->currentItem()->text()))
 		ui.shelfList->addItem(shelf);
 }
 
 void ShelfMapper::shelfChanged()
 {
-	m_selectedShelf = ui.moduleList->currentItem()->text().toStdString();
+	m_selectedShelf = ui.shelfList->currentItem() ? std::make_optional(ui.shelfList->currentItem()->text().toStdString()) : std::nullopt;
+	ui.shelfText->setText(QString{ m_selectedShelf.value_or("").c_str() });
 }
 
 std::optional<std::string> ShelfMapper::getModuleId() const

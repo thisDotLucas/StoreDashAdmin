@@ -11,6 +11,8 @@ NodeTypeSelectTool::NodeTypeSelectTool(Node* node, QWidget* parent) : m_node(nod
 		ui.basicRadioButton->setChecked(true);
 	else if (type == NodeType::Start)
 		ui.startRadioButton->setChecked(true);
+	else if (type == NodeType::Shelf)
+		ui.shelfRadioButton->setChecked(true);
 	else
 		ui.endRadioButton->setChecked(true);
 }
@@ -21,6 +23,8 @@ void NodeTypeSelectTool::okButtonPressed()
 		m_node->setNodeType(NodeType::Basic);
 	else if (ui.startRadioButton->isChecked())
 		m_node->setNodeType(NodeType::Start);
+	else if (ui.shelfRadioButton->isChecked())
+		m_node->setNodeType(NodeType::Shelf);
 	else
 		m_node->setNodeType(NodeType::End);
 }

@@ -2,6 +2,7 @@
 #include "ShelfMapper.h"
 #include "GridScene.h"
 #include "StoreDashAdmin.h"
+#include "DrawingArea.h"
 #include <iostream>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QGraphicsScene>
@@ -36,8 +37,6 @@ void Shelf::remove()
 std::optional<QJsonObject> Shelf::serialize(QJsonObject& root)
 {
 	QJsonObject jsonShelf;
-	jsonShelf.insert("ModuleID", getModuleId().value_or("NULL").c_str());
-	jsonShelf.insert("ShelfID", getShelfId().value_or("NULL").c_str());
 	jsonShelf.insert("X", sceneBoundingRect().x());
 	jsonShelf.insert("Y", sceneBoundingRect().y() * -1);
 	jsonShelf.insert("Width", sceneBoundingRect().width());
@@ -66,18 +65,12 @@ void Shelf::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 {
 	QMenu menu;
 	menu.addAction("Delete");
-	menu.addAction("Map");
+
 	QAction* a = menu.exec(event->screenPos());
 
 	if (a && a->text() == "Delete")
 	{
 		remove();
-	}
-	else if (a && a->text() == "Map")
-	{
-		ShelfMapper* w = new ShelfMapper(this, ((StoreDashAdmin*)this->scene()->parent())->getIdMap(), (QWidget*)this->scene()->parent()->parent());
-		w->setWindowModality(Qt::WindowModality::ApplicationModal);
-		w->show();
 	}
 }
 

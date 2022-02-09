@@ -15,9 +15,9 @@ class StoreDashAdmin : public QWidget
 public:
 	StoreDashAdmin(QWidget* parent = Q_NULLPTR);
 	void setCursorLabel(const QPointF& point);
-	void setIdMap(std::map<std::string, std::vector<std::string>>);
 	void setToken(const QString& token) { m_authToken = token; emit hasToken(); };
-	std::map<QString, std::vector<QString>> getIdMap() const { return m_ids; }
+	std::map<QString, std::set<QString>>* getIdMap() { return &m_ids; }
+	DrawingArea* getView() const { return (DrawingArea*)ui.graphicsView; };
 
 private slots:
 	virtual void keyPressEvent(QKeyEvent* e);
@@ -41,5 +41,5 @@ private:
 	QNetworkReply* m_reply;
 	QNetworkAccessManager* m_manager2;
 	QNetworkReply* m_reply2;
-	std::map<QString, std::vector<QString>> m_ids;
+	std::map<QString, std::set<QString>> m_ids;
 };
