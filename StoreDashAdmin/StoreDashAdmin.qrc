@@ -1,4 +1,7 @@
 <RCC>
-    <qresource prefix="StoreDashAdmin">
+    <qresource prefix="/StoreDashAdmin">
+        <file>save.png</file>
+        <file>open-folder.png</file>
+        <file>neural.png</file>
     </qresource>
 </RCC>

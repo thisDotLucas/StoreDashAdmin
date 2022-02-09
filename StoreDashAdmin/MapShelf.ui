@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Shelf mapping</string>
   </property>
   <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
@@ -35,7 +35,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>360</y>
+     <y>350</y>
      <width>481</width>
      <height>51</height>
     </rect>
@@ -105,8 +105,14 @@
      <x>10</x>
      <y>320</y>
      <width>121</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
   </widget>
   <widget class="QTextEdit" name="shelfText">
@@ -118,8 +124,14 @@
      <x>253</x>
      <y>320</y>
      <width>121</width>
-     <height>31</height>
+     <height>25</height>
     </rect>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAsNeeded</enum>
    </property>
   </widget>
  </widget>
