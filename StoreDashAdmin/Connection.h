@@ -31,4 +31,3 @@ private:
 	Node* m_start;
 	Node* m_end;
 };
-

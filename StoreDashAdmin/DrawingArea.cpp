@@ -4,6 +4,7 @@
 #include "Connection.h"
 #include "StoreDashAdmin.h"
 #include "GridScene.h"
+#include "ConnectionPicker.h"
 #include <iostream>
 
 DrawingArea::DrawingArea(QWidget* parent) : QGraphicsView(parent)
@@ -62,7 +63,7 @@ void DrawingArea::mousePressEvent(QMouseEvent* e)
 				else
 					item.value()->update();
 
-				m_picker = std::nullopt;
+				setPicker(std::make_shared<ConnectionPicker>());
 			}
 		}
 		else if (m_pen.has_value())
@@ -84,7 +85,6 @@ void DrawingArea::mouseReleaseEvent(QMouseEvent* e)
 		if (m_pen.has_value())
 		{
 			m_pen.value()->lift();
-			m_pen = std::nullopt;
 		}
 
 		QGraphicsView::mouseReleaseEvent(e);

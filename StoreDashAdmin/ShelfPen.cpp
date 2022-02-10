@@ -24,7 +24,10 @@ Shelf* ShelfPen::lift()
 		}
 	}
 
-	return m_shelf.value();
+	auto ret = m_shelf.value();
+	m_shelf = std::nullopt;
+
+	return ret;
 }
 
 Shelf* ShelfPen::move(const QPointF& point)

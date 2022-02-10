@@ -11,7 +11,10 @@ Node* NodePen::press(const QPointF& point)
 
 Node* NodePen::lift()
 {
-	return m_node.value();
+	auto ret = m_node.value();
+	m_node = std::nullopt;
+
+	return ret;
 }
 
 Node* NodePen::move(const QPointF& point)
