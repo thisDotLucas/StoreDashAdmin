@@ -2,7 +2,6 @@
 
 Connection* ConnectionPen::press(const QPointF& point)
 {
-	//m_connection = new Connection(point.x(), point.y());
 	return m_connection.value();
 }
 
