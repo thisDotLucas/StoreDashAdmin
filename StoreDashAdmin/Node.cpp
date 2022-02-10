@@ -71,6 +71,7 @@ Node::Node(QJsonObject object, std::map<QString, std::set<QString>>* ids)
 	setFlag(ItemIsMovable);
 	setFlag(ItemSendsScenePositionChanges);
 	setFlag(ItemIsSelectable);
+	setFlag(ItemIsFocusable);
 }
 
 Node::Node(const int x, const int y, const double radius) : m_id(runningNumber++)
@@ -83,6 +84,7 @@ Node::Node(const int x, const int y, const double radius) : m_id(runningNumber++
 	setFlag(ItemIsMovable);
 	setFlag(ItemSendsScenePositionChanges);
 	setFlag(ItemIsSelectable);
+	setFlag(ItemIsFocusable);
 }
 
 QPointF Node::getCenterOfSceneBoundingRect()
@@ -268,6 +270,14 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant& value)
 	}
 
 	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->toClosetGridPoint(value.toPointF()) : result;
+}
+
+void Node::keyPressEvent(QKeyEvent* e)
+{
+	if (e->key() == Qt::Key_Delete)
+		remove();
+	else
+		QGraphicsItem::keyPressEvent(e);
 }
 
 void Node::clearNavigationLines()

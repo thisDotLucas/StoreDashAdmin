@@ -17,6 +17,7 @@ Shelf::Shelf(QJsonObject object)
 	setRect(QRectF(x, y, w, h));
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
+	setFlag(ItemIsFocusable);
 	setFlag(ItemSendsScenePositionChanges);
 }
 
@@ -25,6 +26,7 @@ Shelf::Shelf(const int x, const int y)
 	setRect(QRectF(x, y, 0, 0));
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
+	setFlag(ItemIsFocusable);
 	setFlag(ItemSendsScenePositionChanges);
 }
 
@@ -79,4 +81,12 @@ QVariant Shelf::itemChange(GraphicsItemChange change, const QVariant& value)
 	auto result = QGraphicsItem::itemChange(change, value);
 
 	return scene() && change == ItemPositionChange ? ((GridScene*)scene())->toClosetGridPoint(value.toPointF()) : result;
+}
+
+void Shelf::keyPressEvent(QKeyEvent* e)
+{
+	if (e->key() == Qt::Key_Delete)
+		remove();
+	else
+		QGraphicsItem::keyPressEvent(e);
 }

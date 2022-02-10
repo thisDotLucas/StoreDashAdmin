@@ -10,10 +10,12 @@ Connection::Connection(QJsonObject object, const std::map<int, Node*>& nodeMap) 
 
 	setStart(nodeMap.at(fromId));
 	setEnd(nodeMap.at(toId));
+	setZValue(-1);
 }
 
 Connection::Connection(Node* start) : m_start(start), m_end(nullptr)
 {
+	setZValue(-1);
 }
 
 void Connection::setStart(Node* start)
@@ -51,6 +53,7 @@ std::optional<QJsonObject> Connection::serialize(QJsonObject& root)
 	QJsonObject jsonConnection;
 	jsonConnection.insert("From", m_start->getId());
 	jsonConnection.insert("To", m_end->getId());
+	jsonConnection.insert("Weight", std::round(line().length()));
 
 	auto connectionJsonArray = root.value("Connections").toArray();
 	connectionJsonArray << jsonConnection;

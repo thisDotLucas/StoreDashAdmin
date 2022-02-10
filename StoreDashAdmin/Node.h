@@ -47,6 +47,7 @@ protected:
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+	virtual void keyPressEvent(QKeyEvent* e);
 
 private:
 	int m_id;
