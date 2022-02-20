@@ -15,6 +15,7 @@ Shelf::Shelf(QJsonObject object)
 	const int h = object.value("Height").toInt();
 
 	setRect(QRectF(x, y, w, h));
+	setRotation(object.value("Rotation").toInt());
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsFocusable);
@@ -39,10 +40,11 @@ void Shelf::remove()
 std::optional<QJsonObject> Shelf::serialize(QJsonObject& root)
 {
 	QJsonObject jsonShelf;
-	jsonShelf.insert("X", sceneBoundingRect().x());
-	jsonShelf.insert("Y", sceneBoundingRect().y() * -1);
-	jsonShelf.insert("Width", sceneBoundingRect().width());
-	jsonShelf.insert("Height", sceneBoundingRect().height());
+	jsonShelf.insert("X", rect().x());
+	jsonShelf.insert("Y", rect().y() * -1);
+	jsonShelf.insert("Width", (int)rect().width());
+	jsonShelf.insert("Height", (int)rect().height());
+	jsonShelf.insert("Rotation", (int)rotation());
 
 	auto shelfJsonArray = root.value("Shelves").toArray();
 	shelfJsonArray << jsonShelf;
@@ -87,6 +89,14 @@ void Shelf::keyPressEvent(QKeyEvent* e)
 {
 	if (e->key() == Qt::Key_Delete)
 		remove();
+	else if (e->key() == Qt::Key_D)
+	{
+		setRotation(rotation() + 1.0);
+	}
+	else if (e->key() == Qt::Key_A)
+	{
+		setRotation(rotation() - 1.0);
+	}
 	else
 		QGraphicsItem::keyPressEvent(e);
 }

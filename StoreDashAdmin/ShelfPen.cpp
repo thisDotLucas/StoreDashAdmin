@@ -11,6 +11,9 @@ Shelf* ShelfPen::press(const QPointF& point)
 
 Shelf* ShelfPen::lift()
 {
+	if (!m_shelf.has_value())
+		return nullptr;
+
 	auto items = m_shelf.value()->collidingItems();
 	for (const auto& item : items)
 	{
