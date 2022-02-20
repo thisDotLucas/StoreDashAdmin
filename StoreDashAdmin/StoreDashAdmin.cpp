@@ -193,7 +193,7 @@ void StoreDashAdmin::getToken()
 	QNetworkRequest request(QUrl{ "https://storedash-project.eu.auth0.com/oauth/token" });
 	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-	QString body = "{ \"client_id\": \"BzL4Q8lag6ZKEjOcljqlOD5Dlwjaztcq\", \"client_secret\" : \"-53CuLQAslaOQzSOF9eWQv7C2w8svDfxI9jXRJltjKYDbgPC9dFwSW8GqUIilbyn\", \"audience\" : \"https://products-api.eu1.cluster.storeda.sh/\", \"grant_type\" : \"client_credentials\" }";
+	QString body = "{ \"client_id\": \"bY5xou0GuCi0IkoZa9qKTqLAULUxzNvU\", \"client_secret\" : \"0JaxM2CExmCNLaSRGksME_6ifDLlrvNiZuLyBGFaFRIfAPmAlk71lCCHVGgLVTmI\", \"audience\" : \"https://*.eu1.cluster.storeda.sh/\", \"grant_type\" : \"client_credentials\" }";
 	m_reply = m_manager->post(request, body.toUtf8());
 
 	QObject::connect(m_reply, &QNetworkReply::finished, this, &StoreDashAdmin::gotToken);
