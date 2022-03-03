@@ -12,7 +12,7 @@ class ShelfMapper : public QDialog
 	Q_OBJECT
 
 public:
-	ShelfMapper(Node* shelfNode, std::map<QString, std::set<QString>>* ids, QWidget* parent = Q_NULLPTR);
+	ShelfMapper(Node* shelfNode, const std::map<QString, std::map<QString, std::set<QString>>>& staticIds, std::map<QString, std::map<QString, std::set<QString>>>* ids, QWidget* parent = Q_NULLPTR);
 	std::optional<std::string> getModuleId() const;
 	std::optional<std::string> getShelfId() const;
 
@@ -29,6 +29,6 @@ private:
 	std::optional<std::string> m_selectedShelfAtStart;
 	std::optional<std::string> m_selectedModule;
 	std::optional<std::string> m_selectedShelf;
-	std::map<QString, std::set<QString>>* m_ids;
+	std::map<QString, std::map<QString, std::set<QString>>>* m_ids;
 };
 

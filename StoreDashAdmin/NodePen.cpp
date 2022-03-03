@@ -2,10 +2,15 @@
 #include "GridScene.h"
 #include "Shelf.h"
 
+NodePen::~NodePen()
+{
+	clearNavigationLines();
+}
+
 Node* NodePen::press(const QPointF& point)
 {
 	clearNavigationLines();
-	m_node = new Node(point.x(), point.y(), 20.0);
+	m_node = new Node(point.x(), point.y(), NODE_RADIUS);
 	return m_node.value();
 }
 

@@ -70,7 +70,7 @@ void StoreDashAdmin::saveButtonPressed()
 	{
 		Serializable* serializableItem = dynamic_cast<Serializable*>(item);
 		if (serializableItem)
-			serializableItem->serialize(jsonObject).value();
+			serializableItem->serialize(jsonObject);
 	}
 
 	QByteArray json = QJsonDocument(jsonObject).toJson();
@@ -106,6 +106,16 @@ void StoreDashAdmin::loadButtonPressed()
 
 		if (isValid)
 		{
+			for (auto& item : ui.graphicsView->items())
+			{
+				if (dynamic_cast<Node*>(item))
+					dynamic_cast<Node*>(item)->remove();
+				else if (dynamic_cast<Shelf*>(item))
+					dynamic_cast<Shelf*>(item)->remove();
+				else if (dynamic_cast<Connection*>(item))
+					dynamic_cast<Connection*>(item)->remove();
+			}
+
 			ui.graphicsView->items().clear();
 
 			QJsonArray shelves = object.value("Shelves").toArray();
@@ -139,7 +149,7 @@ void StoreDashAdmin::loadButtonPressed()
 
 void StoreDashAdmin::getIds()
 {
-	QNetworkRequest backendRequest(QUrl{ "https://products-api.eu1.cluster.storeda.sh/product/v1/layout" });
+	QNetworkRequest backendRequest(QUrl{ "https://products-api.eu1.cluster.storeda.sh/product/v2/layout" });
 	backendRequest.setRawHeader(QByteArray("Authorization"), QByteArray(("Bearer " + m_authToken.value().toStdString()).c_str()));
 	backendRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json; charset=utf-8");
 
@@ -169,14 +179,25 @@ void StoreDashAdmin::gotIds()
 	if (m_reply2->error() == QNetworkReply::NoError)
 	{
 		QJsonObject json = QJsonDocument::fromJson(m_reply2->readAll()).object().value("data").toObject();
-		for (const auto& key : json.keys())
+		for (const auto& sectionKey : json.keys())
 		{
-			std::set<QString> values;
-			for (const auto& value : json.value(key).toArray())
-				values.insert(QString{ std::to_string(value.toInt()).c_str() });
+			std::map<QString, std::set<QString>> values;
+			QJsonObject section = json.value(sectionKey).toObject();
+			for (const auto& shelfKey : section.keys())
+			{
+				std::set<QString> products;
+				for (const auto& product : section.value(shelfKey).toArray())
+				{
+					products.insert(product.toString());
+				}
 
-			m_ids.insert({ key, values });
+				values.insert({ QString{ std::to_string(shelfKey.toInt()).c_str() }, products });
+			}
+
+			m_ids.insert({ sectionKey, values });
 		}
+
+		m_static_ids = m_ids;
 	}
 	else
 	{

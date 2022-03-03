@@ -46,9 +46,13 @@ namespace {
 
 }
 
-Node::Node(QJsonObject object, std::map<QString, std::set<QString>>* ids)
+Node::Node(QJsonObject object, std::map<QString, std::map<QString, std::set<QString>>>* ids)
 {
 	m_id = object.value("ID").toInt();
+
+	if (m_id > runningNumber)
+		runningNumber = m_id + 1;
+
 	m_type = stringToNodeType(object.value("Type").toString().toStdString());
 
 	if (m_type == NodeType::Shelf)
@@ -56,18 +60,21 @@ Node::Node(QJsonObject object, std::map<QString, std::set<QString>>* ids)
 		m_moduleId = object.value("ModuleID").toString().toStdString();
 		m_shelfId = object.value("ShelfID").toString().toStdString();
 
-		ids->at(QString{ m_moduleId.value().c_str() }).erase(QString{ m_shelfId.value().c_str() });
+		if (m_moduleId != "NULL" && m_shelfId != "NULL")
+			ids->at(QString{ m_moduleId.value().c_str() }).erase(QString{ m_shelfId.value().c_str() });
 	}
 
 	const double x = object.value("X").toInt();
 	const double y = object.value("Y").toInt() * -1.0;
-	constexpr double radius = 20.0;
 
 	QBrush brush;
 	brush.setColor(QColor(RGB_BASIC));
 	brush.setStyle(Qt::SolidPattern);
 	setBrush(brush);
-	setRect(QRectF(x - (radius / 2), y - (radius / 2), radius, radius));
+
+	resetColor();
+
+	setRect(QRectF(x - (NODE_RADIUS / 2), y - (NODE_RADIUS / 2), NODE_RADIUS, NODE_RADIUS));
 	setFlag(ItemIsMovable);
 	setFlag(ItemSendsScenePositionChanges);
 	setFlag(ItemIsSelectable);
@@ -245,7 +252,7 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 	}
 	else if (a && a->text() == "Map")
 	{
-		ShelfMapper* w = new ShelfMapper(this, ((StoreDashAdmin*)this->scene()->parent())->getIdMap(), (QWidget*)this->scene()->parent()->parent());
+		ShelfMapper* w = new ShelfMapper(this, ((StoreDashAdmin*)this->scene()->parent())->getStaticIdMap(), ((StoreDashAdmin*)this->scene()->parent())->getIdMap(), (QWidget*)this->scene()->parent()->parent());
 		w->setWindowModality(Qt::WindowModality::ApplicationModal);
 		w->show();
 	}

@@ -20,6 +20,7 @@ Shelf::Shelf(QJsonObject object)
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsFocusable);
 	setFlag(ItemSendsScenePositionChanges);
+	setFlag(ItemSendsGeometryChanges);
 }
 
 Shelf::Shelf(const int x, const int y)
@@ -29,6 +30,7 @@ Shelf::Shelf(const int x, const int y)
 	setFlag(ItemIsSelectable);
 	setFlag(ItemIsFocusable);
 	setFlag(ItemSendsScenePositionChanges);
+	setFlag(ItemSendsGeometryChanges);
 }
 
 void Shelf::remove()
@@ -40,8 +42,8 @@ void Shelf::remove()
 std::optional<QJsonObject> Shelf::serialize(QJsonObject& root)
 {
 	QJsonObject jsonShelf;
-	jsonShelf.insert("X", rect().x());
-	jsonShelf.insert("Y", rect().y() * -1);
+	jsonShelf.insert("X", rect().x() + pos().x());
+	jsonShelf.insert("Y", (rect().y() + pos().y()) * -1);
 	jsonShelf.insert("Width", (int)rect().width());
 	jsonShelf.insert("Height", (int)rect().height());
 	jsonShelf.insert("Rotation", (int)rotation());

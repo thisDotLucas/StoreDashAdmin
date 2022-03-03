@@ -50,6 +50,9 @@ bool Connection::hasCollissions() const
 
 std::optional<QJsonObject> Connection::serialize(QJsonObject& root)
 {
+	if (!m_start || !m_end)
+		return std::nullopt;
+
 	QJsonObject jsonConnection;
 	jsonConnection.insert("From", m_start->getId());
 	jsonConnection.insert("To", m_end->getId());

@@ -6,6 +6,7 @@
 class NodePen : public Pen
 {
 public:
+	~NodePen();
 	Node* press(const QPointF& point) override;
 	Node* lift() override;
 	Node* move(const QPointF& point) override;

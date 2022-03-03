@@ -16,7 +16,8 @@ public:
 	StoreDashAdmin(QWidget* parent = Q_NULLPTR);
 	void setCursorLabel(const QPointF& point);
 	void setToken(const QString& token) { m_authToken = token; emit hasToken(); };
-	std::map<QString, std::set<QString>>* getIdMap() { return &m_ids; }
+	std::map<QString, std::map<QString, std::set<QString>>>* getIdMap() { return &m_ids; }
+	const std::map<QString, std::map<QString, std::set<QString>>>& getStaticIdMap() { return m_static_ids; }
 	DrawingArea* getView() const { return (DrawingArea*)ui.graphicsView; };
 
 private slots:
@@ -41,5 +42,6 @@ private:
 	QNetworkReply* m_reply;
 	QNetworkAccessManager* m_manager2;
 	QNetworkReply* m_reply2;
-	std::map<QString, std::set<QString>> m_ids;
+	std::map<QString, std::map<QString, std::set<QString>>> m_static_ids;
+	std::map<QString, std::map<QString, std::set<QString>>> m_ids;
 };
