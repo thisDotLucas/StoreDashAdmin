@@ -8,6 +8,7 @@
 
 static constexpr const char* CONTEXT_MENU_CONNECT_TO = "Connect to...";
 static int runningNumber = 0;
+static constexpr double NODE_RADIUS = 20.0;
 
 enum class NodeType
 {
@@ -22,7 +23,7 @@ class Connection;
 class Node : public QGraphicsEllipseItem, public Serializable
 {
 public:
-	Node(QJsonObject object, std::map<QString, std::set<QString>>* ids);
+	Node(QJsonObject object, std::map<QString, std::map<QString, std::set<QString>>>* ids);
 	Node(const int x, const int y, const double radius);
 	QPointF getCenterOfSceneBoundingRect();
 	void setPickedColor();

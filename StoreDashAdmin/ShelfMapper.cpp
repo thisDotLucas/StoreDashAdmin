@@ -1,6 +1,6 @@
 #include "ShelfMapper.h"
 
-ShelfMapper::ShelfMapper(Node* shelfNode, std::map<QString, std::set<QString>>* ids, QWidget* parent) : m_shelfNode(shelfNode), m_ids(ids)
+ShelfMapper::ShelfMapper(Node* shelfNode, const std::map<QString, std::map<QString, std::set<QString>>>& staticIds, std::map<QString, std::map<QString, std::set<QString>>>* ids, QWidget* parent) : m_shelfNode(shelfNode), m_ids(ids)
 {
 	ui.setupUi(this);
 	connect(ui.okButton, &QPushButton::pressed, this, &ShelfMapper::okButtonPressed);
@@ -11,9 +11,9 @@ ShelfMapper::ShelfMapper(Node* shelfNode, std::map<QString, std::set<QString>>* 
 	m_selectedModuleAtStart = shelfNode->getModuleId();
 	m_selectedShelfAtStart = shelfNode->getShelfId();
 
-	if (m_selectedModuleAtStart.has_value() && m_selectedShelfAtStart.has_value())
+	if (m_selectedModuleAtStart.has_value() && m_selectedShelfAtStart.has_value() && m_selectedModuleAtStart != "NULL" && m_selectedShelfAtStart != "NULL")
 	{
-		m_ids->at(QString{ m_selectedModuleAtStart.value().c_str() }).insert(QString{ m_selectedShelfAtStart.value().c_str() });
+		m_ids->at(QString{ m_selectedModuleAtStart.value().c_str() }).insert({ QString{ m_selectedShelfAtStart.value().c_str() }, staticIds.at(QString{ m_selectedModuleAtStart.value().c_str() }).at(QString{ m_selectedShelfAtStart.value().c_str() }) });
 	}
 
 	ui.moduleText->setText(QString{ shelfNode->getModuleId().value_or("").c_str() });
@@ -61,14 +61,22 @@ void ShelfMapper::moduleChanged()
 	ui.shelfText->setText(QString{ "" });
 
 	ui.shelfList->clear();
-	for (const auto& shelf : m_ids->at(ui.moduleList->currentItem()->text()))
+	for (const auto& [shelf, _] : m_ids->at(ui.moduleList->currentItem()->text()))
+	{
 		ui.shelfList->addItem(shelf);
+	}
 }
 
 void ShelfMapper::shelfChanged()
 {
 	m_selectedShelf = ui.shelfList->currentItem() ? std::make_optional(ui.shelfList->currentItem()->text().toStdString()) : std::nullopt;
 	ui.shelfText->setText(QString{ m_selectedShelf.value_or("").c_str() });
+
+	ui.productList->clear();
+
+	if (ui.moduleList->currentItem() && ui.shelfList->currentItem() && m_ids->contains(ui.moduleList->currentItem()->text()) && m_ids->at(ui.moduleList->currentItem()->text()).contains(ui.shelfList->currentItem()->text()))
+		for (const auto& product : m_ids->at(ui.moduleList->currentItem()->text()).at(ui.shelfList->currentItem()->text()))
+			ui.productList->addItem(product);
 }
 
 std::optional<std::string> ShelfMapper::getModuleId() const
