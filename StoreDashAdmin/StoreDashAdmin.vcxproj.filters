@@ -73,9 +73,6 @@
     <ClCompile Include="NodePen.cpp">
       <Filter>Source Files\Drawing\Pens</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Source Files\Drawing\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Connection.cpp">
       <Filter>Source Files\Drawing\Entities</Filter>
     </ClCompile>
@@ -103,6 +100,9 @@
     <ClCompile Include="Shelf.cpp">
       <Filter>Source Files\Drawing\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files\Drawing\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DrawingArea.h">
@@ -126,9 +126,6 @@
     <ClInclude Include="NodePen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Connection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -145,6 +142,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GridScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
