@@ -13,6 +13,7 @@ struct JsonElement
 class Serializable
 {
 public:
+	// Serializes object into a Json object.
 	virtual std::optional<QJsonObject> serialize(QJsonObject& root) = 0;
 };
 

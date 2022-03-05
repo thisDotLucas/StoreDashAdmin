@@ -1,5 +1,4 @@
 #pragma once
-#include "DrawableEntity.h"
 #include "Serializable.h"
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsSceneContextMenuEvent>
