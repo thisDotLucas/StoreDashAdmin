@@ -6,7 +6,7 @@
 #include "Node.h"
 #include <optional>
 
-
+// Dialog to map products to a shelf.
 class ShelfMapper : public QDialog
 {
 	Q_OBJECT
@@ -17,9 +17,16 @@ public:
 	std::optional<std::string> getShelfId() const;
 
 private slots:
+	// On ok button press.
 	void okButtonPressed();
+
+	// On cancel button press.
 	void cancelButtonPressed();
+
+	// On item changed in module list.
 	void moduleChanged();
+
+	// On item changed in shelf list.
 	void shelfChanged();
 
 private:

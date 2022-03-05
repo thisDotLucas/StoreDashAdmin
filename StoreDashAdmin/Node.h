@@ -1,5 +1,4 @@
 #pragma once
-#include "DrawableEntity.h"
 #include "Serializable.h"
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsSceneContextMenuEvent>
@@ -25,29 +24,57 @@ class Node : public QGraphicsEllipseItem, public Serializable
 public:
 	Node(QJsonObject object, std::map<QString, std::map<QString, std::set<QString>>>* ids);
 	Node(const int x, const int y, const double radius);
+
+	// Center of the nodes bounding rectangle.
 	QPointF getCenterOfSceneBoundingRect();
+
+	// Set color to picked state.
 	void setPickedColor();
+
+	// Set color according to state.
 	void resetColor();
+
+	// Serialize to Json object.
 	std::optional<QJsonObject> serialize(QJsonObject& root);
+
 	int getId() const { return m_id; }
+
+	// Remove from drawing.
 	void remove();
+
+	// Update internal datastructures that keeps track of which connections this node is involved with.
 	void isStartFor(Connection* connection) { m_startFor.insert(connection); };
 	void isEndFor(Connection* connection) { m_endFor.insert(connection); };
 	void removeConnection(Connection* connection);
+
 	void setNodeType(const NodeType type);
 	NodeType getNodeType() const { return m_type; };
+
+	// Clear navigation lines from drawing.
 	void clearNavigationLines();
+
+	// Draw navigation lines to drawing.
 	void setNavigationLines(const QPointF& fromPoint);
+
 	void setModuleId(std::string& id) { m_moduleId = id; };
 	void setShelfId(std::string& id) { m_shelfId = id; };
 	std::optional<std::string> getModuleId() const { return m_moduleId; };
 	std::optional<std::string> getShelfId() const { return m_shelfId; };
 
 protected:
+	// Handles mouse press event.
 	void mousePressEvent(QGraphicsSceneMouseEvent* event);
+
+	// Handles mouse relase event.
 	void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
+	// Handles context menu event.
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent* event);
+
+	// On changes in the state in QTGraphicsItem. 
 	QVariant itemChange(GraphicsItemChange change, const QVariant& value);
+
+	// Handles key press event.
 	virtual void keyPressEvent(QKeyEvent* e);
 
 private:
