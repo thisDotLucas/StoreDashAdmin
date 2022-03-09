@@ -69,6 +69,10 @@ void Shelf::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 void Shelf::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 {
+
+	if (!hasFocus() || !isSelected())
+		return;
+
 	QMenu menu;
 	menu.addAction("Delete");
 
@@ -89,13 +93,13 @@ QVariant Shelf::itemChange(GraphicsItemChange change, const QVariant& value)
 
 void Shelf::keyPressEvent(QKeyEvent* e)
 {
-	if (e->key() == Qt::Key_Delete)
+	if ((hasFocus() && isSelected()) && e->key() == Qt::Key_Delete)
 		remove();
-	else if (e->key() == Qt::Key_D)
+	else if ((hasFocus() && isSelected()) && e->key() == Qt::Key_D)
 	{
 		setRotation(rotation() + 1.0);
 	}
-	else if (e->key() == Qt::Key_A)
+	else if ((hasFocus() && isSelected()) && e->key() == Qt::Key_A)
 	{
 		setRotation(rotation() - 1.0);
 	}

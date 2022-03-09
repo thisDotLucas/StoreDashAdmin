@@ -8,6 +8,8 @@ class Picker
 {
 public:
 	virtual ~Picker() {}
+
+	// Pick item under point.
 	virtual std::optional<QGraphicsItem*> pick(QGraphicsView* view, QPointF point) = 0;
 };
 

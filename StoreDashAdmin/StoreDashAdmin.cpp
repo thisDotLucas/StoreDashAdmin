@@ -33,7 +33,6 @@ StoreDashAdmin::StoreDashAdmin(QWidget* parent) : QWidget(parent)
 
 	connect(this, &StoreDashAdmin::hasToken, this, &StoreDashAdmin::getIds);
 	getToken();
-
 }
 
 void StoreDashAdmin::shelfButtonPressed()
@@ -225,6 +224,22 @@ void StoreDashAdmin::keyPressEvent(QKeyEvent* e)
 	if (e->key() == Qt::Key_Escape)
 	{
 		ui.graphicsView->clearPenAndPicker();
+	}
+	else if (e->key() == Qt::Key_F1)
+	{
+		auto center = ui.graphicsView->mapToScene(ui.graphicsView->viewport()->rect().center());
+
+		// Center the view
+		QRectF sceneR = ui.graphicsView->sceneRect();
+		sceneR.translate(-1 * center.x(), -1 * center.y());
+		ui.graphicsView->setSceneRect(sceneR);
+
+		// Reset scaling
+		QTransform t = ui.graphicsView->transform();
+		t.setMatrix(1.0, t.m12(), t.m13(), t.m21(), 1.0, t.m23(), t.m31(), t.m32(), t.m33());
+		ui.graphicsView->setTransform(t);
+
+		update();
 	}
 
 	QWidget::keyPressEvent(e);

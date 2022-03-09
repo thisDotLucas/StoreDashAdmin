@@ -231,6 +231,9 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent* event)
 {
+	if (!hasFocus() || !isSelected())
+		return;
+
 	QMenu menu;
 	menu.addAction("Delete");
 	menu.addAction("Type");
@@ -281,7 +284,7 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant& value)
 
 void Node::keyPressEvent(QKeyEvent* e)
 {
-	if (e->key() == Qt::Key_Delete)
+	if ((hasFocus() && isSelected()) && e->key() == Qt::Key_Delete)
 		remove();
 	else
 		QGraphicsItem::keyPressEvent(e);

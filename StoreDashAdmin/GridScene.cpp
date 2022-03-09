@@ -1,5 +1,7 @@
 #include "GridScene.h"
 #include "qpainter.h"
+#include "StoreDashAdmin.h"
+#include "DrawingArea.h"
 
 GridScene::GridScene(QObject* parent) : QGraphicsScene(parent)
 {
@@ -49,6 +51,10 @@ void GridScene::adjustPointByDirection(QPointF& point, Direction direction)
 
 void GridScene::drawBackground(QPainter* painter, const QRectF& rect)
 {
+	// At some point displaying gridpoints does not make any sense.
+	if (((StoreDashAdmin*)parent())->getView()->transform().m11() < 0.3)
+		return;
+
 	QPen pen;
 	painter->setPen(pen);
 

@@ -9,6 +9,7 @@ int main(int argc, char* argv[])
 
 	StoreDashAdmin w;
 	w.show();
+	w.setWindowState(Qt::WindowMaximized);
 
 	return a.exec();
 }
