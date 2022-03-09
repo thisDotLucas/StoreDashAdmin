@@ -21,12 +21,16 @@ void DrawingArea::setPen(std::shared_ptr<Pen> pen)
 {
 	m_pen = pen;
 	m_picker = std::nullopt;
+
+	std::ranges::for_each(scene()->items(), [](QGraphicsItem* item) { item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable, false); item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable, false); });
 }
 
 void DrawingArea::setPicker(std::shared_ptr<Picker> picker)
 {
 	m_picker = picker;
 	m_pen = std::nullopt;
+
+	std::ranges::for_each(scene()->items(), [](QGraphicsItem* item) { item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable, false); if (dynamic_cast<Shelf*>(item)) item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable, false); });
 }
 
 void DrawingArea::keyPressEvent(QKeyEvent* e)
@@ -51,7 +55,7 @@ void DrawingArea::mousePressEvent(QMouseEvent* e)
 	{
 		QGraphicsView::mousePressEvent(e);
 
-		if (m_picker.has_value())
+		if (m_picker.has_value() && e->button() == Qt::LeftButton)
 		{
 			auto item = m_picker.value()->pick(this, mapToScene(e->pos()));
 			if (item.has_value())
@@ -66,7 +70,7 @@ void DrawingArea::mousePressEvent(QMouseEvent* e)
 				setPicker(std::make_shared<ConnectionPicker>());
 			}
 		}
-		else if (m_pen.has_value())
+		else if (m_pen.has_value() && e->button() == Qt::LeftButton)
 		{
 			const QPointF point = mapToScene(e->pos());
 			scene()->addItem(m_pen.value()->press(getClosestGridPoint(point)));
@@ -82,7 +86,7 @@ void DrawingArea::mouseReleaseEvent(QMouseEvent* e)
 	}
 	else
 	{
-		if (m_pen.has_value())
+		if (m_pen.has_value() && e->button() == Qt::LeftButton)
 		{
 			m_pen.value()->lift();
 		}
@@ -134,7 +138,8 @@ void DrawingArea::wheelEvent(QWheelEvent* event)
 	const float delta = 1.0f + event->angleDelta().y() / 1000.0f;
 
 	QRectF sceneR = sceneRect();
-	if (delta < 1.f || transform().m11() < 17.0 /* Max zoom */)
+
+	if ((delta < 1.f && transform().m11() > 0.05) || (delta > 1.f && transform().m11() < 17.0))
 	{
 		sceneR.translate((pos - sceneR.center()));
 		setSceneRect(sceneR);
@@ -172,5 +177,8 @@ void DrawingArea::clearPenAndPicker()
 {
 	m_pen = std::nullopt;
 	m_picker = std::nullopt;
+
+	std::ranges::for_each(scene()->items(), [](QGraphicsItem* item) { item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsFocusable, true); item->setFlag(QGraphicsItem::GraphicsItemFlag::ItemIsSelectable, true); });
+
 	updateCursor();
 }
