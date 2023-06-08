@@ -7,6 +7,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QGraphicsScene>
 
+
 Shelf::Shelf(QJsonObject object)
 {
 	const double x = object.value("X").toDouble();

@@ -56,8 +56,8 @@ public:
 	// Draw navigation lines to drawing.
 	void setNavigationLines(const QPointF& fromPoint);
 
-	void setModuleId(std::string& id) { m_moduleId = id; };
-	void setShelfId(std::string& id) { m_shelfId = id; };
+	void setModuleId(const std::string& id) { m_moduleId = id; };
+	void setShelfId(const std::string& id) { m_shelfId = id; };
 	std::optional<std::string> getModuleId() const { return m_moduleId; };
 	std::optional<std::string> getShelfId() const { return m_shelfId; };
 

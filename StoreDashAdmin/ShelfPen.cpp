@@ -2,6 +2,7 @@
 #include "Connection.h"
 #include "Node.h"
 
+
 Shelf* ShelfPen::press(const QPointF& point)
 {
 	m_shelf = new Shelf(point.x(), point.y());

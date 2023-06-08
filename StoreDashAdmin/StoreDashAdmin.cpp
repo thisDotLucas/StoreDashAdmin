@@ -72,7 +72,7 @@ void StoreDashAdmin::saveButtonPressed()
 			serializableItem->serialize(jsonObject);
 	}
 
-	QByteArray json = QJsonDocument(jsonObject).toJson();
+	const QByteArray json = QJsonDocument(jsonObject).toJson();
 
 	if (json.size())
 	{

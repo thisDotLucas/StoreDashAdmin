@@ -33,8 +33,8 @@ ShelfMapper::ShelfMapper(Node* shelfNode, const std::map<QString, std::map<QStri
 
 void ShelfMapper::okButtonPressed()
 {
-	auto moduleId = getModuleId();
-	auto shelfId = getShelfId();
+	const auto moduleId = getModuleId();
+	const auto shelfId = getShelfId();
 
 	if (moduleId.has_value() && shelfId.has_value())
 	{

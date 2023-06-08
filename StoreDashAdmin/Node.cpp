@@ -15,6 +15,7 @@
 #define RGB_END 48, 25, 52
 #define RGB_PICKED 244, 176, 123
 
+
 namespace {
 
 	const char* nodeTypeToString(const NodeType type)

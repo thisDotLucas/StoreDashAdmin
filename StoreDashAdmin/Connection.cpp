@@ -3,6 +3,7 @@
 #include "Shelf.h"
 #include <QtWidgets/QGraphicsScene>
 
+
 Connection::Connection(QJsonObject object, const std::map<int, Node*>& nodeMap) : m_start(nullptr), m_end(nullptr)
 {
 	int fromId = object.value("From").toInt();

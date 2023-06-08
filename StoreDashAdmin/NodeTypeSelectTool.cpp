@@ -1,6 +1,5 @@
 #include "NodeTypeSelectTool.h"
 
-
 NodeTypeSelectTool::NodeTypeSelectTool(Node* node, QWidget* parent) : m_node(node)
 {
 	ui.setupUi(this);
