@@ -7,6 +7,7 @@
 #include "ConnectionPicker.h"
 #include <iostream>
 
+
 DrawingArea::DrawingArea(QWidget* parent) : QGraphicsView(parent)
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
