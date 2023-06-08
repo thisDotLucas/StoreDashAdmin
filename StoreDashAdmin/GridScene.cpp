@@ -9,8 +9,8 @@ GridScene::GridScene(QObject* parent) : QGraphicsScene(parent)
 
 QPointF GridScene::toClosetGridPoint(const QPointF& point)
 {
-	qreal x = round(point.x() / m_gridsize) * m_gridsize;
-	qreal y = round(point.y() / m_gridsize) * m_gridsize;
+	const qreal x = round(point.x() / m_gridsize) * m_gridsize;
+	const qreal y = round(point.y() / m_gridsize) * m_gridsize;
 
 	return QPointF{ x, y };
 }
@@ -58,8 +58,8 @@ void GridScene::drawBackground(QPainter* painter, const QRectF& rect)
 	QPen pen;
 	painter->setPen(pen);
 
-	qreal left = int(rect.left()) - (int(rect.left()) % m_gridsize);
-	qreal top = int(rect.top()) - (int(rect.top()) % m_gridsize);
+	const qreal left = int(rect.left()) - (int(rect.left()) % m_gridsize);
+	const qreal top = int(rect.top()) - (int(rect.top()) % m_gridsize);
 	QVector<QPointF> points;
 	for (qreal x = left; x < rect.right(); x += m_gridsize) {
 		for (qreal y = top; y < rect.bottom(); y += m_gridsize) {
