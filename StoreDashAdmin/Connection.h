@@ -4,6 +4,7 @@
 #include "Node.h"
 #include <map>
 
+
 class Connection : public QGraphicsLineItem, public Serializable
 {
 public:
