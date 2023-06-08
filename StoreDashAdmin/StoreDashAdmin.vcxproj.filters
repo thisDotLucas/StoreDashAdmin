@@ -58,9 +58,6 @@
     <ClCompile Include="DrawingArea.cpp">
       <Filter>Source Files\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Pen.cpp">
-      <Filter>Source Files\Drawing\Pens</Filter>
-    </ClCompile>
     <ClCompile Include="ShelfPen.cpp">
       <Filter>Source Files\Drawing\Pens</Filter>
     </ClCompile>
@@ -81,9 +78,6 @@
     </ClCompile>
     <ClCompile Include="ShelfMapper.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Serializable.cpp">
-      <Filter>Source Files\Serializing</Filter>
     </ClCompile>
     <ClCompile Include="NodeTypeSelectTool.cpp">
       <Filter>Source Files</Filter>

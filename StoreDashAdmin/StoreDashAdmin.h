@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QGraphicsItem>
 #include <QtWidgets/QGraphicsScene>
@@ -7,6 +6,7 @@
 #include <QtGui>
 #include "ui_StoreDashAdmin.h"
 #include "DrawingArea.h"
+
 
 class StoreDashAdmin : public QWidget
 {

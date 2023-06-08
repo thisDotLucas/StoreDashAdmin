@@ -6,6 +6,7 @@
 #include "Node.h"
 #include <optional>
 
+
 // Dialog to change the type of a node.
 class NodeTypeSelectTool : public QDialog
 {

@@ -2,6 +2,7 @@
 #include "GridScene.h"
 #include "Shelf.h"
 
+
 NodePen::~NodePen()
 {
 	clearNavigationLines();

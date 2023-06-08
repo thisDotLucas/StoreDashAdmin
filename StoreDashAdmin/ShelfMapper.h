@@ -6,6 +6,7 @@
 #include "Node.h"
 #include <optional>
 
+
 // Dialog to map products to a shelf.
 class ShelfMapper : public QDialog
 {

@@ -4,6 +4,7 @@
 #include <qjsonvalue.h>
 #include <optional>
 
+
 struct JsonElement
 {
 	QString key;

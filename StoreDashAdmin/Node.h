@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <set>
 
+
 static constexpr const char* CONTEXT_MENU_CONNECT_TO = "Connect to...";
 static int runningNumber = 0;
 static constexpr double NODE_RADIUS = 20.0;

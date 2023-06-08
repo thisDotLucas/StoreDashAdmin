@@ -3,6 +3,7 @@
 #include "Node.h"
 #include "qpoint.h"
 
+
 class NodePen : public Pen
 {
 public:

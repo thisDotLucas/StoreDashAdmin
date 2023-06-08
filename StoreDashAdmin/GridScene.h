@@ -2,6 +2,7 @@
 #include <QtWidgets/QGraphicsWidget>
 #include <QtWidgets/QGraphicsScene>
 
+
 enum class Direction
 {
 	Up,

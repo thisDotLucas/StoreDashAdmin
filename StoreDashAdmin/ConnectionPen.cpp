@@ -1,5 +1,6 @@
 #include "ConnectionPen.h"
 
+
 Connection* ConnectionPen::press(const QPointF& point)
 {
 	return m_connection.value();

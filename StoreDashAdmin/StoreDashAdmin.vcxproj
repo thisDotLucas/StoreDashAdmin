@@ -114,9 +114,7 @@
     </ClCompile>
     <ClCompile Include="NodePen.cpp" />
     <ClCompile Include="NodeTypeSelectTool.cpp" />
-    <ClCompile Include="Pen.cpp" />
     <ClCompile Include="Picker.cpp" />
-    <ClCompile Include="Serializable.cpp" />
     <ClCompile Include="Shelf.cpp" />
     <ClCompile Include="ShelfMapper.cpp" />
     <ClCompile Include="ShelfPen.cpp" />

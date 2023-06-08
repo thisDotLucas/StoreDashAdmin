@@ -4,6 +4,7 @@
 #include "qpoint.h"
 #include <optional>
 
+
 class ConnectionPen : public Pen
 {
 public:

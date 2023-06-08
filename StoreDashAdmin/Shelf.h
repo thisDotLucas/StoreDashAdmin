@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <optional>
 
+
 class Shelf : public QGraphicsRectItem, public Serializable
 {
 public:
