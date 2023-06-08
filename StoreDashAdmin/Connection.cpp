@@ -24,9 +24,7 @@ void Connection::setStart(Node* start)
 	{
 		m_start = start;
 		if (m_end != nullptr)
-		{
 			createLine();
-		}
 	}
 }
 
